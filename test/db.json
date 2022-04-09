@@ -1,0 +1,51 @@
+{
+  "branches": [
+    {
+      "id": "chcInstitute",
+      "name": "Charicha Institute",
+      "admin": "Ajaya RajBhandari"
+    }
+  ],
+  "transactions": [
+    {
+      "id": "NSQ6lzAMg7",
+      "source": "Source",
+      "destination": "Destination",
+      "remarks": "Remarks",
+      "amount": "120",
+      "transactionType": "Expense",
+      "date": "2022-04-09",
+      "branchId": "chcInstitute"
+    },
+    {
+      "id": "6KWh2FABMZ",
+      "source": "Test",
+      "destination": "TestDestination",
+      "remarks": "RemarksWala",
+      "amount": "1000",
+      "transactionType": "Income",
+      "date": "2022-04-14",
+      "branchId": "chcInstitute"
+    },
+    {
+      "id": "EwI6gD3wsE",
+      "source": "WElcome",
+      "destination": "Hero",
+      "remarks": "Transaction Remarks",
+      "amount": "12000",
+      "transactionType": "Income",
+      "date": "2022-04-14",
+      "branchId": "chcInstitute"
+    },
+    {
+      "id": "bvcYDEqe36",
+      "source": "LinkedIn",
+      "destination": "Hero",
+      "remarks": "Transaction Remarks",
+      "amount": "12000",
+      "transactionType": "Expense",
+      "date": "2022-04-14",
+      "branchId": "chcInstitute"
+    }
+  ]
+}

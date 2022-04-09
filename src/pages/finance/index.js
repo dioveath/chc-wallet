@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Button, Stack, HStack, FormControl, FormLabel, FormHelperText, Input, NumberInput, NumberInputField, InputGroup, InputRightElement, Select } from '@chakra-ui/react';
-
+import { TransactionService } from '../../Service/TransactionService.js';
 
 
 function FinancePage(props){
@@ -14,9 +14,8 @@ function FinancePage(props){
   const [ remarks, setRemarks ] = useState('');
   const handleRemarksChange = (e) => setRemarks(e.target.value);
 
-  const [ amount, setAmount ] = useState('');
+  const [ amount, setAmount ] = useState(0);
   const handleAmountChange = (e) => setAmount(e.target.value);      
-
 
   const TransactionType = [
     "Income",
@@ -25,6 +24,11 @@ function FinancePage(props){
 
   const [ transactionType, setTransactionType ] = useState(TransactionType[0]);
   const handleTransactionChange = (e) => setTransactionType(e.target.value);
+
+  const [ dateTime, setDateTime ]  = useState(Date.now());
+  const handleDateTimeChange = (e) => {
+    setDateTime(e.target.value);
+  };
 
   return (
     <Box padding="0rem 12rem">
@@ -67,9 +71,31 @@ function FinancePage(props){
               TransactionType.map((t) => <option value={t} key={t}> {t} </option>)
             }
           </Select>
+
+          <input name="" type="date" value={dateTime} onChange={handleDateTimeChange}/>
         </HStack>
 
-        <Button bg="purple" color="white" _hover={{bg: "purple.900"}}>
+        <Button bg="purple" color="white" _hover={{bg: "purple.900"}} onClick={(e)=> {
+          /* if(TransactionService.isValidTransaction({ */
+          /*   source, */
+          /*   destination, */
+          /*   remarks, */
+          /*   amount */
+          /* })) */
+          /*   console.log("valid transaction"); */
+          /* else */
+          /*   console.log("invalid transaction"); */
+
+          TransactionService.addTrasaction({
+            "source": source,
+            "destination": destination,
+            "remarks": remarks,
+            "amount": amount,
+            "transactionType": transactionType,
+            "date": dateTime
+          }, "chcInstitute");
+
+        }}>
           Add Transaction
         </Button>
       </Stack>      
