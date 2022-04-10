@@ -20,7 +20,6 @@ mongoose.connection.once('open', function() {
   console.log('Connection has been made.');
 }).on('error', function(error) {
   console.log('Connect error.');
-  mongoose.disconnect();
 }).on('disconnected', function(){
   console.log('Connection disconnected.');
 });

@@ -5,6 +5,7 @@ module.exports = function makeCreateTransaction(transactionAccess){
             'Content-Type': 'application/json'
         };
         try { 
+          console.log("reqBody: " + httpRequest.body);
           const newTransaction = await transactionAccess.addTransaction(httpRequest.body);
           return {
             headers,

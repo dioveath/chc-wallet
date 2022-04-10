@@ -12,6 +12,7 @@ var TransactionSchema = new Schema({
   branchId: String
 }, { timestamps: true });
 
+
 TransactionSchema.plugin(uniqueValidator);
 var Transaction = mongoose.model('Transaction', TransactionSchema);
 

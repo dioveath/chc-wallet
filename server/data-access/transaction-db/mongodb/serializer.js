@@ -4,18 +4,13 @@
 const _serializeSingle = (transaction) => {
   return {
     "id": transaction._id,
-    "first_name": transaction.first_name,
-    "last_name": transaction.last_name,
-    "password": transaction.password,
-    "salt": transaction.salt,
-    "gaming_name": transaction.gaming_name,
-    "email": transaction.email,
-    "phone_number": transaction.phone_number,
-    "address": transaction.address,
-    "dob": transaction.dob,
-    "phone_verified": transaction.phone_verified,
-    "email_verified": transaction.email_verified,
-    "roles": transaction.roles,
+    "source": transaction.source,
+    "destination": transaction.destination,
+    "remarks": transaction.remarks,
+    "amount": transaction.amount,
+    "transactionType": transaction.transactionType,
+    "date": transaction.date,
+    "branchId": transaction.branchId,
     "createdAt": transaction.createdAt,
     "updatedAt": transaction.updatedAt
   };

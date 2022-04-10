@@ -24,6 +24,7 @@ function findTransactionById(id){
 
 async function addTransaction(transactionInfo){
   // defaults
+  console.log(transactionInfo);
   var transaction = await makeTransaction(transactionInfo);
 
   var newTransaction = {
