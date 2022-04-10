@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Box, Flex, Text, Button, Tabs, TabList, TabPanels, Tab, TabPanel }from '@chakra-ui/react';
 
 import LineChart from '../../components/LineChart.js';
+import Navbar from '../../components/Navbar.js';
 import axios from 'axios';
 
 import { generateRandomId } from '../../Service/TransactionService.js';
@@ -40,11 +41,10 @@ export const options = {
 
 
 
-const labels = ['Sunday', 'Monday', 'Tuesday', 'Thursday', 'Friday', 'Saturday'];
 
 export const data = {
   id: '0',
-  labels,
+  labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
   datasets: [
     {
       label: 'Charicha Institute',
@@ -135,45 +135,18 @@ function HomePage (){
   }, [financeData.id, chartOptions.id]);
 
   return (
-    <Flex flexDirection="column" justifyContent="center" alignItems="center">
-      <Text fontSize='2rem'
-            fontWeight='bold'>
-        Welcome to Charicha Dashboard Overview
-      </Text>
-
-      <Tabs width="100%">
-        <TabList>
-          <Tab width="100%"> Income </Tab>
-          <Tab width="100%"> Expense </Tab>
-        </TabList>
-
-        <TabPanels>
-          <TabPanel display="flex" flexDirection="column" justifyContent="center" alignItems="center">
-
-            <Box width="100%">
-              <LineChart data={financeData} options={chartOptions}/>
-            </Box>
-            <Button onClick={() => {
-              let newData = JSON.parse(JSON.stringify(financeData));
-              newData.datasets.forEach((dtSet) => {
-                dtSet.data = labels.map(() => Math.random() * 1000);
-                if(dtSet.fill === "start") {
-                  dtSet.fill = "end";
-                } else {
-                  dtSet.fill = "start";
-                }
-              });
-              setFinanceData(newData);
-            }}> Change to Fill </Button>
-            
-          </TabPanel>
-          <TabPanel>
-            <p>two!</p>
-          </TabPanel>
-        </TabPanels>
-      </Tabs>      
-
-    </Flex>
+    <>
+      <Navbar/>
+      <Flex flexDirection="column" justifyContent="center" alignItems="center">
+        <Text fontSize='2rem'
+              fontWeight='bold'>
+          Welcome to Charicha Dashboard Overview
+        </Text>
+        <Box width="100%">
+          <LineChart data={financeData} options={chartOptions}/>
+        </Box>
+      </Flex>
+    </>
   );
 
 }
