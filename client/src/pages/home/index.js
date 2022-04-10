@@ -40,8 +40,6 @@ export const options = {
 };
 
 
-
-
 export const data = {
   id: '0',
   labels: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
@@ -142,7 +140,7 @@ function HomePage (){
               fontWeight='bold'>
           Welcome to Charicha Dashboard Overview
         </Text>
-        <Box width="100%">
+        <Box width="90%">
           <LineChart data={financeData} options={chartOptions}/>
         </Box>
       </Flex>
