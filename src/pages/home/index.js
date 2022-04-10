@@ -3,6 +3,9 @@ import { useState, useEffect } from 'react';
 import { Box, Flex, Text, Button, Tabs, TabList, TabPanels, Tab, TabPanel }from '@chakra-ui/react';
 
 import LineChart from '../../components/LineChart.js';
+import axios from 'axios';
+
+import { generateRandomId } from '../../Service/TransactionService.js';
 
 export const options = {
   responsive: true,
@@ -13,56 +16,123 @@ export const options = {
   plugins: {
     title: {
       display: true,
-      text: 'Charicha Finance',
+      text: 'Wallet of Charicha',
     },
+    autocolors: false,
+    annotation: {
+      drawTime: 'afterDraw',
+      annotations: []
+    }
+
   },
-  
   scales: {
     y: {
       type: 'linear',
       display: true,
       position: 'left',
+      weight: 10,
+      gridLines: {
+        drawBorder: false
+      }
     }
   },
 };
 
-const labels = ['January', 'February', 'March', 'April', 'May', 'June', 'July'];
+
+
+const labels = ['Sunday', 'Monday', 'Tuesday', 'Thursday', 'Friday', 'Saturday'];
 
 export const data = {
+  id: '0',
   labels,
   datasets: [
     {
       label: 'Charicha Institute',
-      data: labels.map(() => Math.random() * 1000),
-      borderColor: 'rgb(255, 99, 132)',
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      data: [],
+      borderColor: '#0EE8E1',
+      backgroundColor: '#0EE8E166',
       yAxisID: 'y',
       fill: 'start',
       tension: 0.4,
     },
     {
-      label: 'Charicha Institute',
-      data: labels.map(() => Math.random() * 1000),
-      borderColor: 'rgb(39, 201, 83)',
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      label: 'Charicha Gaming',
+      data: [],
+      borderColor: '#B71B1B',
+      backgroundColor: '#B71B1B66',
       yAxisID: 'y',
       fill: 'start',
       tension: 0.4,
-    },
-    {
-      label: 'Charicha Institute',
-      data: labels.map(() => Math.random() * 1000),
-      borderColor: 'rgb(90, 10, 78)',
-      backgroundColor: 'rgba(255, 99, 132, 0.5)',
-      yAxisID: 'y',
-      fill: 'start',
-      tension: 0.4,
-    }    
+    }
   ],
 };
 
+
 function HomePage (){
   const [financeData, setFinanceData] = useState(data);
+  const [chartOptions, setChartOptions] = useState(options);
+
+  useEffect(() => {
+
+    (async () => {
+      try {
+        let today = new Date();
+        let dataResponse = await axios.get(`http://localhost:3000/walletdata?year=${today.getFullYear()}&month=${today.getMonth()+1}`);
+        let branchesResponse = await axios.get(`http://localhost:3000/branches`);
+
+        let branches = branchesResponse.data;
+        let labels = Array.from({length: 10}, (_, i) => i+1);
+        let newData = JSON.parse(JSON.stringify(financeData));
+        let newOptions = JSON.parse(JSON.stringify(chartOptions));
+
+        newOptions.id = branches.reduce((p, c) => `${p}${c.id}`, '');
+        newData.id = `${today.getFullYear()}-${today.getMonth()}`;
+        newData.labels = labels;
+        newData.datasets = [];
+
+        dataResponse.data.forEach((branchData) => {
+          let branch = branchesResponse.data.find(branch => branch.id == branchData.branchId);
+          newData.datasets.push({
+            label: branch.name,
+            data: branchData.datas,
+            borderColor: branch.borderColor,
+            backgroundColor: branch.backgroundColor,
+            yAxisID: 'y',
+            fill: 'start',
+            tension: 0.4
+          });
+        });
+
+        branches.forEach((branch) => {
+          let rentAnnotation = {
+            type: 'line',
+            borderColor: branch.borderColor,
+            borderWidth: 2,
+            click: function({chart, element}) {
+              // console.log(chart, element);
+            },
+            label: {
+              backgroundColor: branch.backgroundColor,
+              content: 'Monthly Bill for ' + branch.name,
+              position: 'end',
+              enabled: true,
+            },
+            scaleID: 'y',
+            value: parseInt(branch.roomRent) + parseInt(branch.internetBill) + parseInt(branch.waterBill)
+          };
+
+          newOptions.plugins.annotation.annotations.push(rentAnnotation);
+        });
+
+        setFinanceData(newData);
+        setChartOptions(newOptions);
+      } catch (e){
+        console.log(e);
+      }
+    })();
+
+
+  }, [financeData.id, chartOptions.id]);
 
   return (
     <Flex flexDirection="column" justifyContent="center" alignItems="center">
@@ -81,7 +151,7 @@ function HomePage (){
           <TabPanel display="flex" flexDirection="column" justifyContent="center" alignItems="center">
 
             <Box width="100%">
-              <LineChart data={financeData} options={options}/>
+              <LineChart data={financeData} options={chartOptions}/>
             </Box>
             <Button onClick={() => {
               let newData = JSON.parse(JSON.stringify(financeData));

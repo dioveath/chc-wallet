@@ -51,4 +51,4 @@ const TransactionService = {
 };
 
 
-export { TransactionService };
+export { TransactionService, generateRandomId };

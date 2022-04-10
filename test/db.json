@@ -1,51 +1,141 @@
 {
   "branches": [
     {
-      "id": "chcInstitute",
-      "name": "Charicha Institute",
-      "admin": "Ajaya RajBhandari"
-    }
+    "id": "chcInstitute",
+    "name": "Charicha Institute",
+    "admin": "Ajaya RajBhandari",
+    "borderColor": "#0EE8E1",
+    "backgroundColor": "#0EE8E166",
+    "roomRent": "4500",
+    "internetBill": "350",
+    "waterBill": "250"
+  },
+    {
+    "id": "chcGaming",
+    "name": "Charicha Gaming",
+    "admin": "Saroj Rai",
+    "borderColor": "#B71B1B",
+    "backgroundColor": "#B71B1B66",
+    "roomRent": "6000",
+    "internetBill": "350",
+    "waterBill": "250"
+  },
+    {
+    "id": "chcProductions",
+    "name": "Charicha Productions",
+    "admin": "Santosh Adhikari",
+    "borderColor": "pink",
+    "backgroundColor": "pink",
+    "roomRent": "3000",
+    "internetBill": "350",
+    "waterBill": "250"
+  }        
   ],
+
+  "walletData": [
+    {
+    "id": "bvcYAEqe36",
+    "branchId": "chcInstitute",
+    "year": 2022,
+    "month": 4,
+    "datas": [
+      10,
+      133,
+      310,
+      404,
+      600,
+      349,
+      802,
+      400,
+      984,
+      100,
+      1239
+    ]
+  },
+    {
+    "id": "avcYAEqe36",
+    "branchId": "chcGaming",
+    "year": 2022,
+    "month": 4,
+    "datas": [
+      349,
+      10,
+      133,
+      404,
+      600,
+      802,
+      984,
+      310,
+      1239,
+      400,
+      0,
+      100
+    ]
+  },
+    {
+    "id": "abcYAEqe36",
+    "branchId": "chcProductions",
+    "year": 2022,
+    "month": 4,
+    "datas": [
+      984,
+      133,
+      349,
+      1239,
+      404,
+      802,
+      600,
+      10,
+      0,
+      310,
+      100,
+      400
+    ]
+  }     
+    
+  ],
+
   "transactions": [
     {
-      "id": "NSQ6lzAMg7",
-      "source": "Source",
-      "destination": "Destination",
-      "remarks": "Remarks",
-      "amount": "120",
-      "transactionType": "Expense",
-      "date": "2022-04-09",
-      "branchId": "chcInstitute"
-    },
+    "id": "NSQ6lzAMg7",
+    "source": "Source",
+    "destination": "Destination",
+    "remarks": "Remarks",
+    "amount": "120",
+    "transactionType": "Expense",
+    "date": "2022-04-09",
+    "branchId": "chcInstitute"
+  },
     {
-      "id": "6KWh2FABMZ",
-      "source": "Test",
-      "destination": "TestDestination",
-      "remarks": "RemarksWala",
-      "amount": "1000",
-      "transactionType": "Income",
-      "date": "2022-04-14",
-      "branchId": "chcInstitute"
-    },
+    "id": "6KWh2FABMZ",
+    "source": "Test",
+    "destination": "TestDestination",
+    "remarks": "RemarksWala",
+    "amount": "1000",
+    "transactionType": "Income",
+    "date": "2022-04-14",
+    "branchId": "chcInstitute"
+  },
     {
-      "id": "EwI6gD3wsE",
-      "source": "WElcome",
-      "destination": "Hero",
-      "remarks": "Transaction Remarks",
-      "amount": "12000",
-      "transactionType": "Income",
-      "date": "2022-04-14",
-      "branchId": "chcInstitute"
-    },
+    "id": "EwI6gD3wsE",
+    "source": "WElcome",
+    "destination": "Hero",
+    "remarks": "Transaction Remarks",
+    "amount": "12000",
+    "transactionType": "Income",
+    "date": "2022-04-14",
+    "branchId": "chcInstitute"
+  },
     {
-      "id": "bvcYDEqe36",
-      "source": "LinkedIn",
-      "destination": "Hero",
-      "remarks": "Transaction Remarks",
-      "amount": "12000",
-      "transactionType": "Expense",
-      "date": "2022-04-14",
-      "branchId": "chcInstitute"
-    }
+    "id": "bvcYDEqe36",
+    "source": "LinkedIn",
+    "destination": "Hero",
+    "remarks": "Transaction Remarks",
+    "amount": "12000",
+    "transactionType": "Expense",
+    "date": "2022-04-14",
+    "branchId": "chcInstitute"
+  }
   ]
+
 }

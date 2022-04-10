@@ -9,6 +9,7 @@ import {
   Legend,
   Filler
 } from 'chart.js';
+import AnnotationPlugin from 'chartjs-plugin-annotation';
 import { Line } from 'react-chartjs-2';
 
 ChartJS.register(
@@ -19,7 +20,8 @@ ChartJS.register(
   Title,
   Tooltip,
   Legend,
-  Filler
+  Filler,
+  AnnotationPlugin
 );
 
 function LineChart(props) {

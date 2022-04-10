@@ -76,15 +76,6 @@ function FinancePage(props){
         </HStack>
 
         <Button bg="purple" color="white" _hover={{bg: "purple.900"}} onClick={(e)=> {
-          /* if(TransactionService.isValidTransaction({ */
-          /*   source, */
-          /*   destination, */
-          /*   remarks, */
-          /*   amount */
-          /* })) */
-          /*   console.log("valid transaction"); */
-          /* else */
-          /*   console.log("invalid transaction"); */
 
           TransactionService.addTrasaction({
             "source": source,
