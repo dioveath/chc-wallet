@@ -7,6 +7,7 @@ const serialize = require('./serializer');
 const makeTransaction = require('../../../models/transaction/index').makeTransaction;
 const makeUpdateTransaction = require('../../../models/transaction/index').makeUpdateTransaction;
 const errorFormatter = require('./errorFormatter');
+const walletAccess = require('../../wallet-db/index.js');
 
 
 function listTransactions(){
@@ -23,8 +24,6 @@ function findTransactionById(id){
 }
 
 async function addTransaction(transactionInfo){
-  // defaults
-  console.log(transactionInfo);
   var transaction = await makeTransaction(transactionInfo);
 
   var newTransaction = {
@@ -36,6 +35,32 @@ async function addTransaction(transactionInfo){
     date: transaction.getDate(),
     branchId: transaction.getBranchId(),
   };
+
+  console.log(newTransaction.date.split('-')[0], newTransaction.date.split('-')[1]);
+  let splittedDate = newTransaction.date.split('-');
+  let foundWallet = await walletAccess.findWalletBy({
+    year: splittedDate[0],
+    month: splittedDate[1]
+  });
+
+  if(foundWallet !== null) {
+    let isGreater = (splittedDate[2]) > foundWallet.data.length;
+    let len = isGreater ? (splittedDate[2]) : foundWallet.data.length;
+    let startIndex = !isGreater ? (splittedDate[2] - 1) : foundWallet.data.length - 1;
+
+    for(let i = startIndex; i < len; i++){
+      if(isGreater) {
+        if(i == parseInt(splittedDate[2] - 1))
+          foundWallet.data.push(foundWallet.data[startIndex] + parseInt(newTransaction.amount));
+        else
+          foundWallet.data.push(foundWallet.data[startIndex]);
+      }
+      else
+        foundWallet.data[i] += parseInt(newTransaction.amount);
+    }
+  }
+
+  let updatedWallet = await walletAccess.updateWallet(foundWallet.id, foundWallet);
 
   return Transaction.create(newTransaction).then(serialize).catch(errorFormatter);
 }

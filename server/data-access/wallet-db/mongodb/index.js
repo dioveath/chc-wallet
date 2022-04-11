@@ -8,14 +8,14 @@ const makeWallet = require('../../../models/wallet/index').makeWallet;
 const makeUpdateWallet = require('../../../models/wallet/index').makeUpdateWallet;
 const errorFormatter = require('./errorFormatter');
 
-
 function listWallets(){
   return Wallet.find({}).then(serialize).catch(errorFormatter);
 }
 
-function findWalletBy(prop, val){
-  if(prop === 'id') prop = '_id';
-  return Wallet.find({[prop]: val}).then(res => serialize(res[0])).catch(errorFormatter);
+function findWalletBy(props){
+  console.log(props);
+  // if(prop === 'id') prop = '_id';
+  return Wallet.find(props).then(res => serialize(res[0])).catch(errorFormatter);
 }
 
 function findWalletById(id){
@@ -33,6 +33,8 @@ async function addWallet(walletInfo){
     month: wallet.getMonth(),
     data: wallet.getData()
   };
+
+  
 
   return Wallet.create(newWallet).then(serialize).catch(errorFormatter);
 }
