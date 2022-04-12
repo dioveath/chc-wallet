@@ -13,6 +13,8 @@ module.exports = function makeExpressCallback(controller){
         'User-Agent': req.get('User-Agent')
       }
     };
+
+    console.log(controller);
     
     controller(httpRequest).then(httpResponse => {
       if(httpResponse.headers) {

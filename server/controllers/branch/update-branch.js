@@ -1,23 +1,26 @@
-module.exports = function makeListBranchs(branchAccess){
+module.exports = function makeUpdateUsser(branchAccess){
   
-  return async function listBranchs(httpRequest){
+  return async function updateBranch(httpRequest){
     
     const headers = {
       'Content-Type': 'application/json'
     };
+
     try {
-      const branchs = await branchAccess.listBranchs();
+      const updatedBranch = await branchAccess.updateBranch(httpRequest.params.id, httpRequest.body);
       return {
         headers,
         statusCode: 200,
         body: {
           status: 'success',
-          branchs
+          updatedBranch
         }
       };
-    } catch (error){
-      // Error logging
-      console.log(error);
+
+    } catch(error){
+      // TODO: Error logging
+      // console.log(error);
+
       return {
         headers,
         statusCode: 400,
@@ -26,9 +29,8 @@ module.exports = function makeListBranchs(branchAccess){
           errorList: error.message.split(',')
         }
       };
-
-    };
+    }
 
   };
 
-};
+}

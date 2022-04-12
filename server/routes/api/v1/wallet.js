@@ -9,6 +9,6 @@ router.get('/', makeExpressCallback(walletController.listWallets));
 router.get('/:id', makeExpressCallback(walletController.getWallet));
 // router.post('/', makeExpressCallback(walletController.createWallet));
 // router.post('/:id', makeExpressCallback(walletController.updateWallet));
-// router.delete('/:id', makeExpressCallback(walletController.deteteWallet));
+// router.delete('/:id', makeExpressCallback(walletController.deleteWallet));
 
 module.exports = router;
