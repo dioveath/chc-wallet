@@ -7,6 +7,7 @@ import Navbar from '../../components/Navbar.js';
 import axios from 'axios';
 
 import { generateRandomId } from '../../Service/TransactionService.js';
+import config from '../../config/config.js';
 
 export const options = {
   responsive: true,
@@ -75,7 +76,7 @@ function HomePage (){
     (async () => {
       try {
         let today = new Date();
-        let dataResponse = await axios.get(`http://localhost:3000/walletdata?year=${today.getFullYear()}&month=${today.getMonth()+1}`);
+        let dataResponse = await axios.get(`${config.apiUrl}/walletdata?year=${today.getFullYear()}&month=${today.getMonth()+1}`);
         let branchesResponse = await axios.get(`http://localhost:3000/branches`);
 
         let branches = branchesResponse.data;
@@ -88,11 +89,13 @@ function HomePage (){
         newData.labels = labels;
         newData.datasets = [];
 
-        dataResponse.data.forEach((branchData) => {
+        dataResponse.data.wallets.forEach((branchData) => {
           let branch = branchesResponse.data.find(branch => branch.id == branchData.branchId);
+          let datasetsData = branchData.data.filter((e, i) => i >= (branchData.data.length - 10));
+
           newData.datasets.push({
             label: branch.name,
-            data: branchData.datas,
+            data: datasetsData,
             borderColor: branch.borderColor,
             backgroundColor: branch.backgroundColor,
             yAxisID: 'y',
@@ -112,7 +115,7 @@ function HomePage (){
             label: {
               backgroundColor: branch.backgroundColor,
               content: 'Monthly Bill for ' + branch.name,
-              position: 'end',
+              position: 'start',
               enabled: true,
             },
             scaleID: 'y',

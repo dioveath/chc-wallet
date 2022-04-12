@@ -26,6 +26,7 @@ function findTransactionById(id){
 async function addTransaction(transactionInfo){
   var transaction = await makeTransaction(transactionInfo);
 
+  console.log(transactionInfo.date);  
   var newTransaction = {
     source: transaction.getSource(),
     destination: transaction.getDestination(),
@@ -35,6 +36,8 @@ async function addTransaction(transactionInfo){
     date: transaction.getDate(),
     branchId: transaction.getBranchId(),
   };
+
+  console.log(newTransaction.transactionType);
 
   console.log(newTransaction.date.split('-')[0], newTransaction.date.split('-')[1]);
   let splittedDate = newTransaction.date.split('-');
@@ -50,18 +53,28 @@ async function addTransaction(transactionInfo){
 
     for(let i = startIndex; i < len; i++){
       if(isGreater) {
-        if(i == parseInt(splittedDate[2] - 1))
-          foundWallet.data.push(foundWallet.data[startIndex] + parseInt(newTransaction.amount));
+        if(i == parseInt(splittedDate[2] - 1)) {
+          if(newTransaction.transactionType == "Income")
+            foundWallet.data.push(foundWallet.data[startIndex] + parseInt(newTransaction.amount));
+          else
+            foundWallet.data.push(foundWallet.data[startIndex] - parseInt(newTransaction.amount));            
+        }
         else
           foundWallet.data.push(foundWallet.data[startIndex]);
       }
-      else
-        foundWallet.data[i] += parseInt(newTransaction.amount);
+      else {
+        if(newTransaction.transactionType == "Income")
+          foundWallet.data[i] += parseInt(newTransaction.amount);
+        else
+          foundWallet.data[i] -= parseInt(newTransaction.amount);          
+      }
     }
   }
 
   let updatedWallet = await walletAccess.updateWallet(foundWallet.id, foundWallet);
 
+  console.log(foundWallet.data);
+  console.log("wallet updated!");
   return Transaction.create(newTransaction).then(serialize).catch(errorFormatter);
 }
 
