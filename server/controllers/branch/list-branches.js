@@ -6,13 +6,13 @@ module.exports = function makeListBranches(branchAccess){
       'Content-Type': 'application/json'
     };
     try {
-      const branchs = await branchAccess.listBranches();
+      const branches = await branchAccess.listBranches();
       return {
         headers,
         statusCode: 200,
         body: {
           status: 'success',
-          branchs
+          branches
         }
       };
     } catch (error){

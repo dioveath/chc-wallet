@@ -77,9 +77,9 @@ function HomePage (){
       try {
         let today = new Date();
         let dataResponse = await axios.get(`${config.apiUrl}/walletdata?year=${today.getFullYear()}&month=${today.getMonth()+1}`);
-        let branchesResponse = await axios.get(`http://localhost:3000/branches`);
+        let branchesResponse = await axios.get(`${config.apiUrl}/branch`);
 
-        let branches = branchesResponse.data;
+        let branches = branchesResponse.data.branches;
         let labels = Array.from({length: 10}, (_, i) => i+1);
         let newData = JSON.parse(JSON.stringify(financeData));
         let newOptions = JSON.parse(JSON.stringify(chartOptions));
@@ -90,8 +90,11 @@ function HomePage (){
         newData.datasets = [];
 
         dataResponse.data.wallets.forEach((branchData) => {
-          let branch = branchesResponse.data.find(branch => branch.id == branchData.branchId);
+          let branch = branches.find(branch => branch.branchId == branchData.branchId);
+          if(branch === undefined) return;
+
           let datasetsData = branchData.data.filter((e, i) => i >= (branchData.data.length - 10));
+
 
           newData.datasets.push({
             label: branch.name,
