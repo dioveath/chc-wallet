@@ -18,6 +18,7 @@ import {
 } from '@chakra-ui/react';
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { generateRandomId } from '../Service/TransactionService.js';
+import { Link as RouteLink } from 'react-router-dom';
 
 const NavLink = ({ children }) => (
   <Link
@@ -37,6 +38,9 @@ const NavLink = ({ children }) => (
 export default function Navbar () {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
+
+  const isAuth = false;
+  
   return (
     <>
       <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
@@ -49,37 +53,52 @@ export default function Navbar () {
                 {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
               </Button>
 
-              <Menu>
-                <MenuButton
-                  as={Button}
-                  rounded={'full'}
-                  variant={'link'}
-                  cursor={'pointer'}
-                  minW={0}>
-                  <Avatar
-                    size={'sm'}
-                    src={'https://avatars.dicebear.com/api/male/' + generateRandomId(10) + ".svg" }
-                  />
-                </MenuButton>
-                <MenuList alignItems={'center'}>
-                  <br />
-                  <Center>
+              { !isAuth ? 
+                <>
+                  <Button>
+                    <RouteLink to="/auth">
+                      Login                      
+                    </RouteLink>
+                  </Button>
+                  <Button variant='outline'>
+                    <RouteLink to="/finance">
+                      Register
+                    </RouteLink>
+                  </Button>                          
+                </>
+                :
+                <Menu>
+                  <MenuButton
+                    as={Button}
+                    rounded={'full'}
+                    variant={'link'}
+                    cursor={'pointer'}
+                    minW={0}>
                     <Avatar
-                      size={'2xl'}
+                      size={'sm'}
                       src={'https://avatars.dicebear.com/api/male/' + generateRandomId(10) + ".svg" }
                     />
-                  </Center>
-                  <br />
-                  <Center>
-                    <p>Username</p>
-                  </Center>
-                  <br />
-                  <MenuDivider />
-                  <MenuItem>Your Servers</MenuItem>
-                  <MenuItem>Account Settings</MenuItem>
-                  <MenuItem>Logout</MenuItem>
-                </MenuList>
-              </Menu>
+                  </MenuButton>
+                  <MenuList alignItems={'center'}>
+                    <br />
+                    <Center>
+                      <Avatar
+                        size={'2xl'}
+                        src={'https://avatars.dicebear.com/api/male/' + generateRandomId(10) + ".svg" }
+                      />
+                    </Center>
+                    <br />
+                    <Center>
+                      <p>Username</p>
+                    </Center>
+                    <br />
+                    <MenuDivider />
+                    <MenuItem>Your Servers</MenuItem>
+                    <MenuItem>Account Settings</MenuItem>
+                    <MenuItem>Logout</MenuItem>
+                  </MenuList>
+                </Menu>
+              }
             </Stack>
           </Flex>
         </Flex>

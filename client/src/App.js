@@ -2,6 +2,7 @@ import React from 'react';
 import { ChakraProvider } from '@chakra-ui/react';
 import HomePage from './pages/home/index.js';
 import FinancePage from './pages/finance/index.js';
+import AuthPage from './pages/auth/index.js';
 
 import Fonts from './config/fonts.js';
 import theme from './config/theme.js';
@@ -22,6 +23,7 @@ function App() {
         <Routes>
           <Route path='/' element={<HomePage/>}/>
           <Route path='finance' element={<FinancePage/>}/>
+          <Route path='auth' element={<AuthPage/>}/>          
         </Routes>
       </Router>
 

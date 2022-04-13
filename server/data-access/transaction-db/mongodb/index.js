@@ -42,6 +42,7 @@ async function addTransaction(transactionInfo){
   console.log(newTransaction.date.split('-')[0], newTransaction.date.split('-')[1]);
   let splittedDate = newTransaction.date.split('-');
   let foundWallet = await walletAccess.findWalletBy({
+    branchId: newTransaction.branchId,
     year: splittedDate[0],
     month: splittedDate[1]
   });
@@ -69,12 +70,13 @@ async function addTransaction(transactionInfo){
           foundWallet.data[i] -= parseInt(newTransaction.amount);          
       }
     }
+
+    let updatedWallet = await walletAccess.updateWallet(foundWallet.id, foundWallet);
+    console.log("wallet updated!");
   }
 
-  let updatedWallet = await walletAccess.updateWallet(foundWallet.id, foundWallet);
 
   console.log(foundWallet.data);
-  console.log("wallet updated!");
   return Transaction.create(newTransaction).then(serialize).catch(errorFormatter);
 }
 

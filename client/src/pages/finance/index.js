@@ -109,7 +109,7 @@ function FinancePage(props){
               "amount": amount,
               "transactionType": transactionType,
               "date": dateTime
-            }, "chcInstitute");
+            }, "chcGaming");
 
           }}>
             Add Transaction

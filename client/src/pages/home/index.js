@@ -95,7 +95,6 @@ function HomePage (){
 
           let datasetsData = branchData.data.filter((e, i) => i >= (branchData.data.length - 10));
 
-
           newData.datasets.push({
             label: branch.name,
             data: datasetsData,
