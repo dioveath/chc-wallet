@@ -100,7 +100,11 @@ function HomePage (){
 
   useEffect(() => {
     (async () => {
-      if(user === null) return;
+      if(user === null) {
+        setFinanceData(data);
+        setChartOptions(options);
+        return;
+      }
       try {
         let today = new Date();
 
@@ -174,7 +178,7 @@ function HomePage (){
     })();
 
 
-  }, [financeData.id, chartOptions.id]);
+  }, [financeData.id, chartOptions.id, user]);
 
   return (
     <>

@@ -9,11 +9,29 @@ export default function useAuth(){
 }
 
 export function AuthProvider(props){
-  const [user, setUser] = useState(null);
+  // first check localStorage if it has already saved token
+  let accessToken = localStorage.getItem('accessToken');
+  let userId = localStorage.getItem('userId');
+
+  let localUser = null;
+  if(accessToken !== null && userId !== null)
+    localUser = {userId: userId, accessToken: accessToken};
+
+  const [user, setUser] = useState(localUser);
   // const [userData, setUserData] = useState({ userId: 0});
   const [error, setError] = useState([]);
   const [loading, setLoading] = useState(false);
   const [registerError, setRegisterError] = useState([]);
+
+  const saveUserToLocal = (user) => {
+    localStorage.setItem('accessToken', user.accessToken);
+    localStorage.setItem('userId', user.userId);    
+  };
+
+  const removeUserLocal = () => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('userId');    
+  };
 
   const login = async (loginCreds) => {
     setLoading(true);
@@ -21,10 +39,12 @@ export function AuthProvider(props){
       const response = await axios.post(`${config.serverUrl}/auth/login`, loginCreds);
 
       if(response.data.status === 'success') {
-        setUser({
+        let newUser = {
           userId: response.data.userId,
-          accessToken: response.data.accessToken
-        });
+          accessToken: response.data.accessToken          
+        };
+        setUser(newUser);
+        saveUserToLocal(newUser);
         setError([]);
       } else {
         setUser(null);
@@ -38,16 +58,21 @@ export function AuthProvider(props){
     }
   };
 
+  // const updateToken = async (){
+  // };
+
   const register = async (userData) => {
     setLoading(true);
     try {
       const response = await axios.post(`${config.serverUrl}/auth/register`, userData);
 
       if(response.data.status === 'success') {
-        setUser({
+        let newUser = {
           userId: response.data.userId,
-          accessToken: response.data.accessToken
-        });
+          accessToken: response.data.accessToken          
+        };
+        setUser(newUser);
+        saveUserToLocal(newUser);        
         setRegisterError([]);
       } else {
         setUser(null);
@@ -66,6 +91,7 @@ export function AuthProvider(props){
   const logout = async() => {
     setLoading(true);    
     setUser(null);
+    removeUserLocal();
     setLoading(false);    
   };
 

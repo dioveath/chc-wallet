@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { ChakraProvider } from '@chakra-ui/react';
 import HomePage from './pages/home/index.js';
 import FinancePage from './pages/finance/index.js';
@@ -9,7 +9,6 @@ import Fonts from './config/fonts.js';
 import theme from './config/theme.js';
 import './App.css';
 
-import { AuthProvider } from './hooks/Auth.js';
 
 
 import {
@@ -18,9 +17,15 @@ import {
   BrowserRouter as Router
 } from "react-router-dom";
 
+
 function App() {
+
+  useEffect(() => {
+    
+  });
+
+
   return (
-    <AuthProvider>
     <ChakraProvider theme={theme}>
       <Fonts/>
 
@@ -34,7 +39,6 @@ function App() {
       </Router>
 
     </ChakraProvider>
-    </AuthProvider>
   );
 }
 

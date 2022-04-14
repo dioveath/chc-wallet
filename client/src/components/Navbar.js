@@ -19,6 +19,7 @@ import {
 import { MoonIcon, SunIcon } from '@chakra-ui/icons';
 import { generateRandomId } from '../Service/TransactionService.js';
 import { Link as RouteLink } from 'react-router-dom';
+import useAuth from '../hooks/Auth.js';
 
 const NavLink = ({ children }) => (
   <Link
@@ -39,8 +40,8 @@ export default function Navbar () {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const isAuth = false;
-  
+  const { user, logout } = useAuth(); 
+
   return (
     <>
       <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
@@ -53,7 +54,7 @@ export default function Navbar () {
                 {colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
               </Button>
 
-              { !isAuth ? 
+              { user == null ? 
                 <>
                   <Button>
                     <RouteLink to="/login">
@@ -95,7 +96,7 @@ export default function Navbar () {
                     <MenuDivider />
                     <MenuItem>Your Servers</MenuItem>
                     <MenuItem>Account Settings</MenuItem>
-                    <MenuItem>Logout</MenuItem>
+                    <MenuItem onClick={logout}>Logout</MenuItem>
                   </MenuList>
                 </Menu>
               }
