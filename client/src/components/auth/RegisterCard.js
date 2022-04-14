@@ -18,7 +18,7 @@ import {
 import { useState, useRef } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { Link as RouterLink } from 'react-router-dom';
-import AuthService from '../../Service/AuthService.js';
+import useAuth from '../../hooks/Auth.js';
 
 
 export default function RegisterCard() {
@@ -40,6 +40,8 @@ export default function RegisterCard() {
     setSelectedBranch(e.target.value);
   };
 
+  const { register, loading, registerError } = useAuth(); 
+
   const handleSubmit = async (e) => {
     
     var userData = {
@@ -50,8 +52,7 @@ export default function RegisterCard() {
       branchId: selectedBranch
     };
 
-    const response = await AuthService.registerUser(userData);
-
+    register(userData);
   };
 
   return (
@@ -116,9 +117,14 @@ export default function RegisterCard() {
                 </InputRightElement>
               </InputGroup>
             </FormControl>
+            {registerError.length !== 0 ?
+               <Box>
+                 {registerError.map((err) => <Text key={err} color='red.500' fontSize='0.8rem'> {err } </Text>)}
+               </Box>
+               : <Box></Box>
+              }            
             <Stack spacing={10} pt={2}>
               <Button
-                /* isLoading={} */
                 loadingText="Submitting"
                 size="lg"
                 bg={'blue.400'}
@@ -126,8 +132,9 @@ export default function RegisterCard() {
                 _hover={{
                   bg: 'blue.500',
                 }}
-                onClick={handleSubmit}>
-                Sign up
+                onClick={handleSubmit}
+                isLoading={loading}>
+                Register
               </Button>
             </Stack>
             <Stack pt={6}>

@@ -20,7 +20,7 @@ export default function LoginCard() {
   const email = useRef();
   const password = useRef();
 
-  const { login, isLoading, error } = useAuth();
+  const { login, loading, error } = useAuth();
 
   const onSubmit = () => {
 
@@ -79,7 +79,7 @@ export default function LoginCard() {
                   bg: 'blue.500',
                 }}
                 onClick={onSubmit}
-                isLoading={isLoading}>
+                isLoading={loading}>
                 Log in
               </Button>
             </Stack>

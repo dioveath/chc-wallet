@@ -40,7 +40,7 @@ export default function Navbar () {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { user, logout } = useAuth(); 
+  const { user, logout, userData } = useAuth(); 
 
   return (
     <>
@@ -77,7 +77,7 @@ export default function Navbar () {
                     minW={0}>
                     <Avatar
                       size={'sm'}
-                      src={'https://avatars.dicebear.com/api/male/' + generateRandomId(10) + ".svg" }
+                      src={'https://avatars.dicebear.com/api/male/' + user.userId + ".svg" }
                     />
                   </MenuButton>
                   <MenuList alignItems={'center'}>
@@ -85,12 +85,12 @@ export default function Navbar () {
                     <Center>
                       <Avatar
                         size={'2xl'}
-                        src={'https://avatars.dicebear.com/api/male/' + generateRandomId(10) + ".svg" }
+                        src={'https://avatars.dicebear.com/api/male/' + user.userId + ".svg" }
                       />
                     </Center>
                     <br />
                     <Center>
-                      <p>Username</p>
+                      <p> { userData.fullName }</p>
                     </Center>
                     <br />
                     <MenuDivider />

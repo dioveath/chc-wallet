@@ -95,8 +95,6 @@ function HomePage (){
   const [chartOptions, setChartOptions] = useState(options);
 
   const { user } = useAuth();
-  console.log(user);
-
 
   useEffect(() => {
     (async () => {
@@ -190,7 +188,7 @@ function HomePage (){
         </Text>
         {user == null ?
          <Box backgroundColor="red.500" p="0.5rem 3rem" borderRadius="5px">
-           <Text fontSize="1.5rem" color="white.200"> Please Login for all the financial details </Text>
+           <Text fontSize="1.5rem" color="white"> Please Login for all the financial details </Text>
          </Box> : <></>
         }
          <Box width="90%">
