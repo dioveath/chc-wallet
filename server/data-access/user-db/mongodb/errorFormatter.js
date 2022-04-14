@@ -15,21 +15,8 @@ module.exports = (error) => {
     }
 
     throw new Error(messages.join(','));    
-
   } else if (error.name == 'CastError'){
     throw new Error(`Casting error with ${error.path} of value type '${error.valueType}' to type of '${error.kind}'`);
-  } else if(error.code === 11000){
-
-    // duplicates in db: 
-    // NOTE: this will never be reached, above unique validation will catch first, here is for reference only
-    props = Object.keys(error.keyValue);
-    messages = [];
-
-    for(prop of props){
-      messages.push(`"'${prop}' : '${error.keyValue[`${prop}`]}'" is already in use`);
-    }
-
-    throw new Error(messages.join(','));
   } else if (error.code == 11011 || error.name == 'CastError'){
     throw new Error(`Transaction not found with "id : '${error._id}'"`);
   } else {

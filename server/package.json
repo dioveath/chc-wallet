@@ -17,6 +17,8 @@
     "express": "^4.17.3",
     "joi-oid": "^1.1.2",
     "mongoose": "^6.2.10",
-    "mongoose-unique-validator": "^3.0.0"
+    "mongoose-unique-validator": "^3.0.0",
+    "passport": "^0.5.2",
+    "passport-jwt": "^4.0.0"
   }
 }
