@@ -33,6 +33,6 @@ module.exports = (error) => {
   } else if (error.code == 11011 || error.name == 'CastError'){
     throw new Error(`Transaction not found with "id : '${error._id}'"`);
   } else {
-    throw new Error("Error in database!");
+    throw new Error("Error in database! ");
   }
 };

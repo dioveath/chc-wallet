@@ -24,7 +24,7 @@ const TransactionService = {
 
   getTrasaction: async (transactionId) => {
     try {
-      let response = await axios.get(`${config.apiUrl}/transactions/${transactionId}`);
+      let response = await axios.get(`${config.serverUrl}/api/v1/transactions/${transactionId}`);
       console.log(response.data);
     } catch(e){
       console.log(e);
@@ -36,7 +36,7 @@ const TransactionService = {
       if(!isValidTransaction(transaction)) throw "Not valid transaction";
       let transactionId = generateRandomId(10);
 
-      let response = await axios.post(`${config.apiUrl}/transactions`,
+      let response = await axios.post(`${config.serverUrl}/api/v1/transactions`,
                                       {
                                         id: transactionId,
                                         ...transaction,

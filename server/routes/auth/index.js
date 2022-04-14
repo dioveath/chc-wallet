@@ -1,10 +1,9 @@
 const Router = require('express').Router;
 const config = require('../../config');
 
-const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
+// const jwt = require('jsonwebtoken');
+// const bcrypt = require('bcrypt');
 const UserAccess = require('../../data-access/user-db');
-
 
 const authRouter = new Router();
 

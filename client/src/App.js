@@ -2,7 +2,8 @@ import React from 'react';
 import { ChakraProvider } from '@chakra-ui/react';
 import HomePage from './pages/home/index.js';
 import FinancePage from './pages/finance/index.js';
-import AuthPage from './pages/auth/index.js';
+import LoginPage from './pages/login/index.js';
+import RegisterPage from './pages/register/index.js';
 
 import Fonts from './config/fonts.js';
 import theme from './config/theme.js';
@@ -23,7 +24,8 @@ function App() {
         <Routes>
           <Route path='/' element={<HomePage/>}/>
           <Route path='finance' element={<FinancePage/>}/>
-          <Route path='auth' element={<AuthPage/>}/>          
+          <Route path='login' element={<LoginPage/>}/>
+          <Route path='register' element={<RegisterPage/>}/>                    
         </Routes>
       </Router>
 

@@ -56,12 +56,12 @@ export default function Navbar () {
               { !isAuth ? 
                 <>
                   <Button>
-                    <RouteLink to="/auth">
+                    <RouteLink to="/login">
                       Login                      
                     </RouteLink>
                   </Button>
                   <Button variant='outline'>
-                    <RouteLink to="/finance">
+                    <RouteLink to="/register">
                       Register
                     </RouteLink>
                   </Button>                          
