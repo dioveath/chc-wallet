@@ -9,6 +9,8 @@ import axios from 'axios';
 import { generateRandomId } from '../../Service/TransactionService.js';
 import config from '../../config/config.js';
 
+import useAuth from '../../hooks/Auth.js';
+
 export const options = {
   responsive: true,
   interaction: {
@@ -23,7 +25,28 @@ export const options = {
     autocolors: false,
     annotation: {
       drawTime: 'afterDraw',
-      annotations: []
+      annotations: [
+        {
+          type: 'line',
+          borderColor: 'white',
+          borderWidth: 2,
+          click: function({chart, element}) {
+            // console.log(chart, element);
+          },
+          label: {
+            backgroundColor: 'red',
+            font: {
+              family: 'Nunito',
+              size: 20
+            },
+            content: 'Please login to see full financial details',
+            position: 'center',
+            enabled: true,
+          },
+          scaleID: 'y',
+          value: 0.5
+        }
+      ]
     }
 
   },
@@ -71,13 +94,28 @@ function HomePage (){
   const [financeData, setFinanceData] = useState(data);
   const [chartOptions, setChartOptions] = useState(options);
 
-  useEffect(() => {
+  const { user } = useAuth();
+  console.log(user);
 
+
+  useEffect(() => {
     (async () => {
+      if(user === null) return;
       try {
         let today = new Date();
-        let dataResponse = await axios.get(`${config.apiUrl}/walletdata?year=${today.getFullYear()}&month=${today.getMonth()+1}`);
-        let branchesResponse = await axios.get(`${config.apiUrl}/branch`);
+
+        const axiosDataOptions = {
+          method: 'GET',
+          url: `${config.serverUrl}/api/v1/walletdata?year=${today.getFullYear()}&month=${today.getMonth()+1}`,
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: 'Bearer ' + user.accessToken
+          }
+        };
+
+
+        let dataResponse = await axios.request(axiosDataOptions);
+        let branchesResponse = await axios.get(`${config.serverUrl}/api/v1/branch`);
 
         let branches = branchesResponse.data.branches;
         let labels = Array.from({length: 10}, (_, i) => i+1);
@@ -106,6 +144,7 @@ function HomePage (){
           });
         });
 
+        newOptions.plugins.annotation.annotations = [];
         branches.forEach((branch) => {
           let rentAnnotation = {
             type: 'line',
@@ -145,9 +184,14 @@ function HomePage (){
               fontWeight='bold'>
           Welcome to Charicha Dashboard Overview
         </Text>
-        <Box width="90%">
-          <LineChart data={financeData} options={chartOptions}/>
-        </Box>
+        {user == null ?
+         <Box backgroundColor="red.500" p="0.5rem 3rem" borderRadius="5px">
+           <Text fontSize="1.5rem" color="white.200"> Please Login for all the financial details </Text>
+         </Box> : <></>
+        }
+         <Box width="90%">
+           <LineChart data={financeData} options={chartOptions}/>
+         </Box>
       </Flex>
     </>
   );

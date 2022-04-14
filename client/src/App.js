@@ -9,6 +9,9 @@ import Fonts from './config/fonts.js';
 import theme from './config/theme.js';
 import './App.css';
 
+import { AuthProvider } from './hooks/Auth.js';
+
+
 import {
   Route,
   Routes,
@@ -17,6 +20,7 @@ import {
 
 function App() {
   return (
+    <AuthProvider>
     <ChakraProvider theme={theme}>
       <Fonts/>
 
@@ -30,6 +34,7 @@ function App() {
       </Router>
 
     </ChakraProvider>
+    </AuthProvider>
   );
 }
 

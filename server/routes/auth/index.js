@@ -51,6 +51,7 @@ authRouter.post('/register', async (req, res) => {
   try {
     const user = await UserAccess.addUser(req.body);
     const accessToken = issueJwt(user.id, user.roles);
+
     return res.send({
       status: "success",
       userId: user.id,

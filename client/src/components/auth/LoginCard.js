@@ -12,8 +12,25 @@ import {
   Text,
   useColorModeValue,
 } from '@chakra-ui/react';
+import { useRef } from 'react';
+import useAuth from '../../hooks/Auth.js';
 
 export default function LoginCard() {
+
+  const email = useRef();
+  const password = useRef();
+
+  const { login, isLoading, error } = useAuth();
+
+  const onSubmit = () => {
+
+    login({
+      email: email.current.value,
+      password: password.current.value
+    });
+
+  };
+
   return (
     <Flex
       minH={'100vh'}
@@ -35,13 +52,13 @@ export default function LoginCard() {
           <Stack spacing={4}>
             <FormControl id="email">
               <FormLabel>Email address</FormLabel>
-              <Input type="email" />
+              <Input type="email" ref={email}/>
             </FormControl>
             <FormControl id="password">
               <FormLabel>Password</FormLabel>
-              <Input type="password" />
+              <Input type="password" ref={password}/>
             </FormControl>
-            <Stack spacing={10}>
+            <Stack spacing={5}>
               <Stack
                 direction={{ base: 'column', sm: 'row' }}
                 align={'start'}
@@ -49,13 +66,21 @@ export default function LoginCard() {
                 <Checkbox>Remember me</Checkbox>
                 <Link color={'blue.400'}>Forgot password?</Link>
               </Stack>
+              {error.length !== 0 ?
+               <Box>
+                 {error.map((err) => <Text key={err} color='red.500' fontSize='0.8rem'> {err } </Text>)}
+               </Box>
+               : <Box></Box>
+              }
               <Button
                 bg={'blue.400'}
                 color={'white'}
                 _hover={{
                   bg: 'blue.500',
-                }}>
-                Sign in
+                }}
+                onClick={onSubmit}
+                isLoading={isLoading}>
+                Log in
               </Button>
             </Stack>
           </Stack>

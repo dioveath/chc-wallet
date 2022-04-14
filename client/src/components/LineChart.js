@@ -24,6 +24,11 @@ ChartJS.register(
   AnnotationPlugin
 );
 
+ChartJS.defaults.font = {
+  size: 16,
+  family: 'Nunito'
+};
+
 function LineChart(props) {
   return (
     <Line data={props.data} options={props.options}/>
