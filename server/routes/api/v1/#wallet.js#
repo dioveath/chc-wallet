@@ -5,7 +5,7 @@ const router = Router();
 const walletController = require('../../../controllers/wallet');
 const makeExpressCallback = require('./helpers/express-callback');
 
-const isAuthenticated = require('../../../middlewares/is-authenticated.js');
+
 
 router.get('/', makeExpressCallback(walletController.listWallets));
 router.get('/:id', makeExpressCallback(walletController.getWallet));

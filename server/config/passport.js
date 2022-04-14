@@ -1,6 +1,6 @@
 const jwtStrategy = require('./jwt-strategy');
 
-module.export = (passport) => {
+module.exports = (passport) => {
 
   passport.serializeUser((user, done) => {
     done(null, user);

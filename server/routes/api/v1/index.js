@@ -6,9 +6,11 @@ const walletApi = require('./wallet');
 const transactionApi = require('./transaction.js');
 const userApi = require('./user.js');
 
+const isAuthenticated = require('../../../middlewares/is-authenticated.js');
+
 router.use('/branch', branchesApi);
-router.use('/walletData', walletApi);
-router.use('/transactions', transactionApi);
+router.use('/walletData', isAuthenticated(), walletApi);
+router.use('/transactions', isAuthenticated(), transactionApi);
 router.use('/user', userApi);
 
 
