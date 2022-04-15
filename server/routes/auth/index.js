@@ -69,7 +69,7 @@ authRouter.post('/register', async (req, res) => {
 
 function issueJwt(userId, userRoles){
   const tokenOptions = {
-    expiresIn: '1h'
+    expiresIn: '12h'
   };  
   return jwt.sign({
     sub: userId,

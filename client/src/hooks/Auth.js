@@ -45,6 +45,7 @@ export function AuthProvider(props){
     if(decodedToken.exp * 1000 < currentDate.getTime()){
       setUser(null);
       setUserData({id: 0});
+      removeUserLocal();
     }
 
   };

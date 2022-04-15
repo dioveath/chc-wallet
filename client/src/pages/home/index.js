@@ -186,10 +186,11 @@ function HomePage (){
               fontWeight='bold'>
           Welcome to Charicha Dashboard Overview
         </Text>
-        {user == null ?
-         <Box backgroundColor="red.500" p="0.5rem 3rem" borderRadius="5px">
-           <Text fontSize="1.5rem" color="white"> Please Login for all the financial details </Text>
-         </Box> : <></>
+        {
+          user == null ?
+            <Box backgroundColor="red.500" p="0.5rem 3rem" borderRadius="5px">
+              <Text fontSize="1.5rem" color="white"> Please Login for all the financial details </Text>
+            </Box> : <></>
         }
          <Box width="90%">
            <LineChart data={financeData} options={chartOptions}/>

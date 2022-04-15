@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import {
   Box,
   Button,
   Stack,
   HStack,
+  Wrap,
+  WrapItem,
   FormControl,
   FormLabel,
   FormHelperText,
@@ -20,17 +22,10 @@ import Navbar from '../../components/Navbar.js';
 
 function FinancePage(props){
 
-  const [ source, setSource ] = useState('');
-  const handleSourceChange = (e) => setSource(e.target.value);
-
-  const [ destination, setDestination ] = useState('');
-  const handleDestinationChange = (e) => setDestination(e.target.value);
-
-  const [ remarks, setRemarks ] = useState('');
-  const handleRemarksChange = (e) => setRemarks(e.target.value);
-
-  const [ amount, setAmount ] = useState(0);
-  const handleAmountChange = (e) => setAmount(e.target.value);      
+  const source = useRef();
+  const destination = useRef();
+  const remarks = useRef();
+  const amount = useRef();
 
   const TransactionType = [
     "Income",
@@ -40,75 +35,93 @@ function FinancePage(props){
   const [ transactionType, setTransactionType ] = useState(TransactionType[0]);
   const handleTransactionChange = (e) => setTransactionType(e.target.value);
 
-  const [ dateTime, setDateTime ]  = useState(Date.now());
-  const handleDateTimeChange = (e) => {
-    setDateTime(e.target.value);
-  };
+
+  const dateTime = useRef();
 
   return (
     <>
       <Navbar/>
-      <Box padding="0rem 12rem">
+      <Box padding={{
+        base: "0rem 1rem",
+        md: "0rem 4rem",
+        lg: "0rem 12rem",
+      }}>
         <Box m={"4rem"}></Box>
         <Stack>
 
-          <HStack>
+          <Wrap justify='space-between' align="bottom">
 
-            <FormControl>
-              <FormLabel htmlFor='source'> Transaction Source </FormLabel>
-              <Input id='source' type='text' value={source} onChange={handleSourceChange}/>
-            </FormControl>
+            <WrapItem>
+              <FormControl>
+                <FormLabel htmlFor='source'> Transaction Source </FormLabel>
+                <Input id='source' type='text' ref={source}/>
+              </FormControl>
+            </WrapItem>
 
-            <FormControl>
-              <FormLabel htmlFor='destination'> Transaction Destination </FormLabel>
-              <Input id='destination' type='text' value={destination} onChange={handleDestinationChange}/>
-            </FormControl>
+            <WrapItem>
+              <FormControl>
+                <FormLabel htmlFor='destination'> Transaction Destination </FormLabel>
+                <Input id='destination' type='text' ref={destination}/>
+              </FormControl>
+            </WrapItem>
 
-            <FormControl>
-              <FormLabel htmlFor='transactionRemarks'> Transaction Remarks </FormLabel>
-              <Input id='transactionRemarks' type='text' value={remarks} onChange={handleRemarksChange}/>
-            </FormControl>                
+            <WrapItem>
+              <FormControl>
+                <FormLabel htmlFor='transactionRemarks'> Transaction Remarks </FormLabel>
+                <Input id='transactionRemarks' type='text' ref={remarks}/>
+              </FormControl>                
+            </WrapItem>
             
-          </HStack>
+          </Wrap>
 
-          <HStack>
-            <InputGroup>
-              <NumberInput>
-                <NumberInputField placeholder='Enter amount' value={amount} onChange={handleAmountChange}/>
-                <InputRightElement
-                  pointerEvents='none'
-                  color='gray.300'
-                  fontSize='1.2em'
-                  children='$'
-                />                          
-              </NumberInput>
-            </InputGroup>
+          <Wrap justify='space-between' align='bottom'>
+            <WrapItem>
+              <FormControl>
+                <FormLabel htmlFor="amount"> Amount </FormLabel>              
+                <NumberInput>
+                  <NumberInputField id="amount" placeholder='Enter amount' ref={amount}/>
+                  <InputRightElement
+                    pointerEvents='none'
+                    color='gray.300'
+                    fontSize='1.2em'
+                    children='$'
+                  />                          
+                </NumberInput>
+              </FormControl>
+            </WrapItem>
 
-            <Select value={transactionType} onChange={handleTransactionChange}>
-              {
-                TransactionType.map((t) => <option value={t} key={t}> {t} </option>)
-              }
-            </Select>
+            <FormControl>
+              <FormLabel htmlFor="transactionType"> Transaction Type </FormLabel>              
+              <Select value={transactionType} onChange={handleTransactionChange} id='transactionType'>
+                {
+                  TransactionType.map((t) => <option value={t} key={t}> {t} </option>)
+                }
+              </Select>              
+            </FormControl>
 
-            <input name="" type="date" value={dateTime} onChange={handleDateTimeChange} style={{
-              "color": useColorModeValue("black", "white"),
-              "width": "100%",
-              "padding": "0.4rem 1rem",
-              "backgroundColor": "transparent",
-              "border": "1.2px solid #66666688",
-              "borderRadius": "5px"
-            }}/>
-          </HStack>
+            <FormControl>
+              <FormLabel htmlFor="date"> Transaction Date</FormLabel>
+              <input name="" id='date' type="date" ref={dateTime} style={{
+                "color": useColorModeValue("black", "white"),
+                "width": "100%",
+                "padding": "0.4rem 1rem",
+                "backgroundColor": "transparent",
+                "border": "1.2px solid #66666688",
+                "borderRadius": "5px"
+              }}/>              
+            </FormControl>
+
+          </Wrap>
 
           <Button bg="purple" color="white" _hover={{bg: "purple.900"}} onClick={(e)=> {
 
             TransactionService.addTrasaction({
-              "source": source,
-              "destination": destination,
-              "remarks": remarks,
-              "amount": amount,
+              "source": source.current.value,
+              "destination": destination.current.value,
+              "remarks": remarks.current.value,
+              "amount": amount.current.value,
               "transactionType": transactionType,
-              "date": dateTime
+              "date": dateTime.current.value
             }, "chcGaming");
 
           }}>

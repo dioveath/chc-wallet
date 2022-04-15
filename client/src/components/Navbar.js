@@ -21,6 +21,8 @@ import { generateRandomId } from '../Service/TransactionService.js';
 import { Link as RouteLink } from 'react-router-dom';
 import useAuth from '../hooks/Auth.js';
 
+import { useNavigate } from 'react-router-dom';
+
 const NavLink = ({ children }) => (
   <Link
     px={2}
@@ -40,13 +42,18 @@ export default function Navbar () {
   const { colorMode, toggleColorMode } = useColorMode();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  const { user, logout, userData } = useAuth(); 
+  const { user, logout, userData } = useAuth();
+  const navigate = useNavigate();
 
   return (
     <>
       <Box bg={useColorModeValue('gray.100', 'gray.900')} px={4}>
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
-          <Box> Charicha Finance </Box>
+          <Box>
+            <RouteLink to='/'>
+              Charicha Finance
+            </RouteLink>
+          </Box>
 
           <Flex alignItems={'center'}>
             <Stack direction={'row'} spacing={7}>
@@ -94,7 +101,7 @@ export default function Navbar () {
                     </Center>
                     <br />
                     <MenuDivider />
-                    <MenuItem>Your Servers</MenuItem>
+                    <MenuItem onClick={() => { navigate('/finance'); }}>Your Servers</MenuItem>
                     <MenuItem>Account Settings</MenuItem>
                     <MenuItem onClick={logout}>Logout</MenuItem>
                   </MenuList>
