@@ -15,7 +15,13 @@ function listTransactions(httpQuery){
     JSON.parse(query),
     paginateQuery
   ];
-  return Transaction.paginate(...paginationParams).then((result) => serialize(result.docs)).catch(errorFormatter);
+  return Transaction.paginate(...paginationParams).then((result) => {
+    const { docs, ...pagination } = result;
+    return {
+      pagination,
+      transactions: serialize(docs)
+    };
+  } ).catch(errorFormatter);
 }
 
 function findTransactionBy(prop, val){

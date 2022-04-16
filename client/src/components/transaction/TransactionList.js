@@ -34,6 +34,9 @@ export default function TransactionList(){
           headers: {
             'Content-Type': 'application/json',
             Authorization: 'Bearer ' + user.accessToken
+          },
+          params: {
+            
           }
         };
         
@@ -69,7 +72,6 @@ export default function TransactionList(){
         <Tbody>
           {
             transactions.map((t, i) => {
-              if(i > 9) return <></>;
               return (
                 <Tr>
                   <Td> {t.id} </Td>
