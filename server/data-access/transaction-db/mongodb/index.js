@@ -9,9 +9,13 @@ const makeUpdateTransaction = require('../../../models/transaction/index').makeU
 const errorFormatter = require('./errorFormatter');
 const walletAccess = require('../../wallet-db/index.js');
 
-
-function listTransactions(){
-  return Transaction.find({}).then(serialize).catch(errorFormatter);
+function listTransactions(httpQuery){
+  const { query, ...paginateQuery } = httpQuery;
+  let paginationParams = [
+    JSON.parse(query),
+    paginateQuery
+  ];
+  return Transaction.paginate(...paginationParams).then((result) => serialize(result.docs)).catch(errorFormatter);
 }
 
 function findTransactionBy(prop, val){

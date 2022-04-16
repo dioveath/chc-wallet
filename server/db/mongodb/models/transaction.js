@@ -1,5 +1,6 @@
 const mongoose = require('../connection');
 const uniqueValidator = require('mongoose-unique-validator');
+const paginate = require('mongoose-paginate-v2');
 
 var Schema = mongoose.Schema;
 var TransactionSchema = new Schema({
@@ -16,6 +17,7 @@ var TransactionSchema = new Schema({
 
 
 TransactionSchema.plugin(uniqueValidator);
+TransactionSchema.plugin(paginate);
 var Transaction = mongoose.model('Transaction', TransactionSchema);
 
 module.exports = Transaction;

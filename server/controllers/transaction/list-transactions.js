@@ -6,7 +6,7 @@ module.exports = function makeListTransactions(transactionAccess){
       'Content-Type': 'application/json'
     };
     try {
-      const transactions = await transactionAccess.listTransactions();
+      const transactions = await transactionAccess.listTransactions(httpRequest.query);
       return {
         headers,
         statusCode: 200,

@@ -4,6 +4,7 @@ import { Box, Flex, Text, Button, Tabs, TabList, TabPanels, Tab, TabPanel }from 
 
 import LineChart from '../../components/LineChart.js';
 import Navbar from '../../components/Navbar.js';
+import Footer from '../../components/Footer.js';
 import axios from 'axios';
 
 import { generateRandomId } from '../../Service/TransactionService.js';
@@ -196,6 +197,8 @@ function HomePage (){
            <LineChart data={financeData} options={chartOptions}/>
          </Box>
       </Flex>
+      <Box height="10rem"/>
+      <Footer/>
     </>
   );
 
