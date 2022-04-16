@@ -9,6 +9,7 @@ const _serializeSingle = (wallet) => {
     "year": wallet.year,
     "month": wallet.month,
     "data": wallet.data,
+    "totalAmount": wallet.totalAmount,
     "createdAt": wallet.createdAt,
     "updatedAt": wallet.updatedAt
   };

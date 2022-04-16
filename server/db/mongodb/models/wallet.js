@@ -7,6 +7,7 @@ var WalletSchema = new Schema({
   year: Number,
   month: Number,
   data: Array,
+  totalAmount: Number
 }, { timestamps: true });
 
 

@@ -51,32 +51,45 @@ async function addTransaction(transactionInfo){
     addTransactionToWallet(newTransaction, foundWallet, splittedDate[2]);
   } else {
     console.log("wallet not found!, creating new wallet!");
+    let previousMonthWallet = await walletAccess.findWalletBy({
+      branchId: newTransaction.branchId,
+      year: month == 1 ? year - 1 : year,
+      month: month == 1 ? 12 : month
+    });
+
+    // previousMonthWallet.data[previousMonthWallet.data.length - 1]
+    let previousMonthTotal = previousMonthWallet !== null ? previousMonthWallet.totalAmount : 0;
+
     let newWallet = await walletAccess.addWallet({
       branchId: newTransaction.branchId,
       year: year,
       month: month,
-      data: []
+      data: [previousMonthTotal],
+      totalAmount: previousMonthTotal
     });
     
     addTransactionToWallet(newTransaction, newWallet, splittedDate[2]);
   }
 
-  // console.log(foundWallet.data);
   return Transaction.create(newTransaction).then(serialize).catch(errorFormatter);
 }
 
 async function addTransactionToWallet(transaction, wallet, day){
   let isGreater = (day) > wallet.data.length;
   let len = isGreater ? (day) : wallet.data.length;
-  let startIndex = !isGreater ? (day - 1) : wallet.data.length - 1;
+  let startIndex = !isGreater ? (day - 1) : wallet.data.length;
 
+  console.log({startIndex: startIndex});
+  
   for(let i = startIndex; i < len; i++){
     if(isGreater) {
       if(i == parseInt(day - 1)) {
-        if(transaction.transactionType == "Income")
-          wallet.data.push(wallet.data[startIndex] ?? 0 + parseInt(transaction.amount));
+        if(transaction.transactionType == "Income") {
+          console.log("fsad");
+          wallet.data.push((wallet.data[startIndex] ?? 0) + parseInt(transaction.amount));
+        }
         else
-          wallet.data.push(wallet.data[startIndex] ?? 0 - parseInt(transaction.amount));            
+          wallet.data.push((wallet.data[startIndex] ?? 0) - parseInt(transaction.amount));            
       }
       else
         wallet.data.push(wallet.data[startIndex] ?? 0);
@@ -87,6 +100,13 @@ async function addTransactionToWallet(transaction, wallet, day){
       else
         wallet.data[i] -= parseInt(transaction.amount);          
     }
+  }
+
+  console.log(wallet);
+  if(transaction.transactionType == "Income") {
+    transaction.totalAmount += parseInt(transaction.amount);
+  } else {
+    transaction.totalAmount -= parseInt(transaction.amount);    
   }
 
   let updatedWallet = await walletAccess.updateWallet(wallet.id, wallet);

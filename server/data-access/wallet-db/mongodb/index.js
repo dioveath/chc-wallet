@@ -31,7 +31,8 @@ async function addWallet(walletInfo){
     branchId: wallet.getBranchId(),
     year: wallet.getYear(),
     month: wallet.getMonth(),
-    data: wallet.getData()
+    data: wallet.getData(),
+    totalAmount: wallet.getTotalAmount()
   };
 
   return Wallet.create(newWallet).then(serialize).catch(errorFormatter);

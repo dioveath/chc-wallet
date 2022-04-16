@@ -3,14 +3,16 @@ var buildMakeTransaction = function(transactionValidator){
     branchId,
     year,
     month,
-    data
+    data,
+    totalAmount
   } = {}) => {
 
     var error = transactionValidator({
       branchId,
       year,
       month,
-      data     
+      data,
+      totalAmount
     });
 
     if(error instanceof Object) throw new Error(error.errorList);
@@ -19,7 +21,8 @@ var buildMakeTransaction = function(transactionValidator){
       getBranchId: () => branchId,
       getYear: () => year,
       getMonth: () => month,
-      getData: () => data
+      getData: () => data,
+      getTotalAmount: () => totalAmount
     });
 
   };
