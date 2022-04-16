@@ -9,11 +9,13 @@ import axios from 'axios';
 
 import { generateRandomId } from '../../Service/TransactionService.js';
 import config from '../../config/config.js';
-
 import useAuth from '../../hooks/Auth.js';
+
+import { useMediaQuery } from 'react-responsive';
 
 export const options = {
   responsive: true,
+  maintainAspectRatio: false,
   interaction: {
     intersect: false,
   },
@@ -36,10 +38,6 @@ export const options = {
           },
           label: {
             backgroundColor: 'red',
-            font: {
-              family: 'Nunito',
-              size: 20
-            },
             content: 'Please login to see full financial details',
             position: 'center',
             enabled: true,
@@ -59,6 +57,18 @@ export const options = {
       weight: 10,
       gridLines: {
         drawBorder: false
+      },
+      ticks: {
+        callback: (value, index, ticks) => {
+          console.log(value);
+          // let newStr = ""; 
+          // if(value > 1000) {
+          //   value /= 1000;
+          //   value = value.toFixed(2);
+          //   newStr += value + "K";
+          // }
+          return "Rs. " + value;
+        }
       }
     }
   },
@@ -95,6 +105,12 @@ function HomePage (){
   const [financeData, setFinanceData] = useState(data);
   const [chartOptions, setChartOptions] = useState(options);
 
+  const isTablet = useMediaQuery({ query: '(min-width: 768px)'});
+
+  if(isTablet){
+  }
+
+
   const { user } = useAuth();
 
   useEffect(() => {
@@ -115,7 +131,6 @@ function HomePage (){
             Authorization: 'Bearer ' + user.accessToken
           }
         };
-
 
         let dataResponse = await axios.request(axiosDataOptions);
         let branchesResponse = await axios.get(`${config.serverUrl}/api/v1/branch`);
@@ -183,19 +198,22 @@ function HomePage (){
     <>
       <Navbar/>
       <Flex flexDirection="column" justifyContent="center" alignItems="center">
-        <Text fontSize='2rem'
+        <Box height="2rem"></Box>
+        <Text fontSize={['1.2rem', '1.4rem', '1.8rem']}
               fontWeight='bold'>
           Welcome to Charicha Dashboard Overview
         </Text>
+        <Box height="2rem"></Box>        
         {
           user == null ?
             <Box backgroundColor="red.500" p="0.5rem 3rem" borderRadius="5px">
-              <Text fontSize="1.5rem" color="white"> Please Login for all the financial details </Text>
+              <Text fontSize={["0.8rem", "1rem"]} color="white"> Please Login for all the financial details </Text>
             </Box> : <></>
         }
-         <Box width="90%">
-           <LineChart data={financeData} options={chartOptions}/>
-         </Box>
+        <Box height="2rem"></Box>         
+        <Box width={["99vw", "95vw", "90vw"]} height={["85vh"]}>
+          <LineChart data={financeData} options={chartOptions}/>
+        </Box>
       </Flex>
       <Box height="10rem"/>
       <Footer/>

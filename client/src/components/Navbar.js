@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import {
+  Text,
   Link,
   Box,
   Flex,
@@ -51,7 +52,9 @@ export default function Navbar () {
         <Flex h={16} alignItems={'center'} justifyContent={'space-between'}>
           <Box>
             <RouteLink to='/'>
-              Charicha Finance
+              <Text fontSize={["1rem", "1.1rem", "1.5rem"]} fontWeight="bold">
+                Charicha Finance
+              </Text>
             </RouteLink>
           </Box>
 

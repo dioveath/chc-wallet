@@ -4,6 +4,8 @@ import { Box } from '@chakra-ui/react';
 import TransactionAddForm from '../../components/transaction/TrasanctionAddForm.js';
 import TransactionList from '../../components/transaction/TransactionList.js';
 
+import ReactTableTest from '../../components/transaction/ReactTableTest.js';
+
 function FinancePage(props){
 
   return (
