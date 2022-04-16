@@ -33,7 +33,14 @@ const TransactionService = {
 
   addTrasaction: async (transaction, branchId, accessToken) => {
     try {
-      if(!isValidTransaction(transaction)) throw "Not valid transaction";
+      if(!isValidTransaction(transaction)) {
+        return       {
+          error: [
+            "Not valid transaction, Check for empty fields!"
+          ]
+        };
+      }
+
       let transactionId = generateRandomId(10);
 
       let options = {
@@ -52,8 +59,14 @@ const TransactionService = {
 
       let response = await axios.request(options);
       console.log("transaction added successfully with id: " + transactionId);
+      console.log(response.data);
+      return {
+        transaction: response.data.newTransaction
+      };        
     } catch (e){
-      console.log(e);
+      return {
+        error: e.response.data.errorList
+      };
     }
   }
 

@@ -16,7 +16,8 @@ import {
   InputGroup,
   InputRightElement,
   Select,
-  useColorModeValue
+  useColorModeValue,
+  useToast
 } from '@chakra-ui/react';
 import { TransactionService } from '../../Service/TransactionService.js';
 import Navbar from '../../components/Navbar.js';
@@ -25,7 +26,7 @@ import config from '../../config/config.js';
 import useAuth from '../../hooks/Auth.js';
 
 function FinancePage(props){
-
+  const toast = useToast();
   const source = useRef();
   const destination = useRef();
   const remarks = useRef();
@@ -39,6 +40,19 @@ function FinancePage(props){
   const [ transactionType, setTransactionType ] = useState(TransactionType[0]);
   const handleTransactionChange = (e) => setTransactionType(e.target.value);
 
+  const Categories = [
+    "Water Bill",
+    "Electricity Bill",
+    "Internet Bill",
+    "Room Rent",
+    "Operating",
+    "Service",
+    "Assets",
+    "Food",
+    "Other"
+  ];
+
+  const category = useRef();
   const dateTime = useRef();
 
   const { user, userData } = useAuth();
@@ -83,27 +97,27 @@ function FinancePage(props){
           backgroundColor={branch.backgroundColor}
           w={"100%"}
           h={"4rem"}>
-          <Text> {branch.name} </Text>
+          <Text fontSize="3xl" fontWeight="bold"> {branch.name} </Text>
         </Box>
-        <Stack>
+        <Stack direction={['column']} spacing='24px'>
 
-          <Wrap justify='space-between' align="bottom">
+          <Wrap justify={['center', 'space-between']} align="bottom">
 
-            <WrapItem>
+            <WrapItem width={["300px", "300px"]}>
               <FormControl>
                 <FormLabel htmlFor='source'> Transaction Source </FormLabel>
                 <Input id='source' type='text' ref={source}/>
               </FormControl>
             </WrapItem>
 
-            <WrapItem>
+            <WrapItem width={["300px", "300px"]}>
               <FormControl>
                 <FormLabel htmlFor='destination'> Transaction Destination </FormLabel>
                 <Input id='destination' type='text' ref={destination}/>
               </FormControl>
             </WrapItem>
 
-            <WrapItem>
+            <WrapItem width={["300px", "300px"]}>
               <FormControl>
                 <FormLabel htmlFor='transactionRemarks'> Transaction Remarks </FormLabel>
                 <Input id='transactionRemarks' type='text' ref={remarks}/>
@@ -112,8 +126,8 @@ function FinancePage(props){
             
           </Wrap>
 
-          <Wrap justify='space-between' align='bottom'>
-            <WrapItem>
+          <Wrap justify={['center', 'space-between']} align='bottom'>
+            <WrapItem width={["300px", "300px"]}>
               <FormControl>
                 <FormLabel htmlFor="amount"> Amount </FormLabel>              
                 <NumberInput>
@@ -128,7 +142,7 @@ function FinancePage(props){
               </FormControl>
             </WrapItem>
 
-            <WrapItem>
+            <WrapItem width={["300px", "300px"]}>
               <FormControl>
                 <FormLabel htmlFor="transactionType"> Transaction Type </FormLabel>              
                 <Select value={transactionType} onChange={handleTransactionChange} id='transactionType'>
@@ -139,7 +153,7 @@ function FinancePage(props){
               </FormControl>
             </WrapItem>
 
-            <WrapItem>
+            <WrapItem width={["300px", "300px"]}>
               <FormControl>
                 <FormLabel htmlFor="date"> Transaction Date</FormLabel>
                 <input name="" id='date' type="date" ref={dateTime} style={{
@@ -155,31 +169,49 @@ function FinancePage(props){
 
           </Wrap>
 
-          {/* <Wrap> */}
-          {/*   <WrapItem> */}
+          <WrapItem width={["300px", "auto"]}>
+            <FormControl>
+              <FormLabel htmlFor="transactionType"> Transaction Category </FormLabel>              
+              <Select id='transactionType' ref={category}>
+                {
+                  Categories.map((c) => <option value={c} key={c}> {c} </option>)
+                }
+              </Select>              
+            </FormControl>          
+          </WrapItem>
 
-          {/*     <FormControl> */}
-          {/*       <FormLabel htmlFor="branch"> Branch </FormLabel>               */}
-          {/*       <Select ref={branch}> */}
-          {/*         { */}
-          {/*           branches.map((b) => <option value={b.name} key={b.id}> {b.name} </option>) */}
-          {/*         } */}
-          {/*       </Select>               */}
-          {/*     </FormControl> */}
+          <Button bg="purple" color="white" _hover={{bg: "purple.900"}} onClick={async (e)=> {
 
-          {/*   </WrapItem> */}
-          {/* </Wrap> */}
-
-          <Button bg="purple" color="white" _hover={{bg: "purple.900"}} onClick={(e)=> {
-
-            TransactionService.addTrasaction({
+            const { transaction, error } =await TransactionService.addTrasaction({
               "source": source.current.value,
               "destination": destination.current.value,
               "remarks": remarks.current.value,
               "amount": amount.current.value,
               "transactionType": transactionType,
-              "date": dateTime.current.value
+              "date": dateTime.current.value,
+              "category": category.current.value,
+              "doneBy": user.userId,
             }, branch.branchId, user.accessToken);
+
+            if(error != undefined && error != null) {
+              error.forEach((e) => {
+                toast({
+                  title: 'Transaction Add Failed',
+                  description: e,
+                  status: 'error',
+                  duration: 3000,
+                  isClosable: true
+                });                
+              });
+            } else {
+                toast({
+                  title: 'Transaction Added Successfully',
+                  description: `Transaction ID: ${transaction.id}`,
+                  status: 'success',
+                  duration: 3000,
+                  isClosable: true
+                });                             
+            }
 
           }}>
             Add Transaction

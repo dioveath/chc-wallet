@@ -9,8 +9,10 @@ const _serializeSingle = (transaction) => {
     "destination": transaction.destination,
     "remarks": transaction.remarks,
     "amount": transaction.amount,
+    "category": transaction.category,
     "transactionType": transaction.transactionType,
     "date": transaction.date,
+    "doneBy": transaction.doneBy,
     "branchId": transaction.branchId,
     "createdAt": transaction.createdAt,
     "updatedAt": transaction.updatedAt

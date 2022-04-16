@@ -4,8 +4,10 @@ var buildMakeTransaction = function(transactionValidator){
     destination,
     remarks,
     amount,
+    category,
     transactionType,
     date,
+    doneBy,
     branchId
   } = {}) => {
 
@@ -14,8 +16,10 @@ var buildMakeTransaction = function(transactionValidator){
       destination,
       remarks,
       amount,
+      category,
       transactionType,
       date,
+      doneBy,
       branchId
     });
 
@@ -26,8 +30,10 @@ var buildMakeTransaction = function(transactionValidator){
       getDestination: () => destination,
       getRemarks: () => remarks,
       getAmount: () => amount,
+      getCategory: () => category,
       getTransactionType: () => transactionType,
       getDate: () => date,
+      getDoneBy: () => doneBy,
       getBranchId: () => branchId
     });
 

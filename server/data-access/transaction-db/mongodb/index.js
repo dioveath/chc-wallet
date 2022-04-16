@@ -31,13 +31,14 @@ async function addTransaction(transactionInfo){
     source: transaction.getSource(),
     destination: transaction.getDestination(),
     remarks: transaction.getRemarks(),
-    amount: transaction.getAmount(),    
+    amount: transaction.getAmount(),
+    category: transaction.getCategory(),
     transactionType: transaction.getTransactionType(),
     date: transaction.getDate(),
+    doneBy: transaction.getDoneBy(),
     branchId: transaction.getBranchId(),
   };
 
-  console.log(newTransaction.date.split('-')[0], newTransaction.date.split('-')[1]);
   let splittedDate = newTransaction.date.split('-');
   let year = splittedDate[0];
   let month = splittedDate[1];
@@ -79,8 +80,6 @@ async function addTransactionToWallet(transaction, wallet, day){
   let len = isGreater ? (day) : wallet.data.length;
   let startIndex = !isGreater ? (day - 1) : wallet.data.length;
 
-  console.log({startIndex: startIndex});
-  
   for(let i = startIndex; i < len; i++){
     if(isGreater) {
       if(i == parseInt(day - 1)) {
@@ -102,13 +101,13 @@ async function addTransactionToWallet(transaction, wallet, day){
     }
   }
 
-  console.log(wallet);
   if(transaction.transactionType == "Income") {
     transaction.totalAmount += parseInt(transaction.amount);
   } else {
     transaction.totalAmount -= parseInt(transaction.amount);    
   }
 
+  console.log(wallet);
   let updatedWallet = await walletAccess.updateWallet(wallet.id, wallet);
   console.log("wallet updated!");  
 }

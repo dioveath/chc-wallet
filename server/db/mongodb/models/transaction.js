@@ -7,8 +7,10 @@ var TransactionSchema = new Schema({
   destination: String,
   remarks: String,
   amount: Number,
+  category: String,
   transactionType: String,
   date: Date,
+  doneBy: { type: Schema.Types.ObjectId },
   branchId: String
 }, { timestamps: true });
 
