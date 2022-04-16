@@ -31,17 +31,26 @@ const TransactionService = {
     }
   }, 
 
-  addTrasaction: async (transaction, branchId) => {
+  addTrasaction: async (transaction, branchId, accessToken) => {
     try {
       if(!isValidTransaction(transaction)) throw "Not valid transaction";
       let transactionId = generateRandomId(10);
 
-      let response = await axios.post(`${config.serverUrl}/api/v1/transactions`,
-                                      {
-                                        id: transactionId,
-                                        ...transaction,
-                                        branchId: branchId
-                                      });
+      let options = {
+        method: 'POST',
+        url: `${config.serverUrl}/api/v1/transactions`,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + accessToken
+        },
+        data: {
+          id: transactionId,
+          ...transaction,
+          branchId: branchId          
+        }
+      };
+
+      let response = await axios.request(options);
       console.log("transaction added successfully with id: " + transactionId);
     } catch (e){
       console.log(e);

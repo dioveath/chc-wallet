@@ -48,7 +48,8 @@ function App() {
           fullName: response.data.user.fullName,
           email: response.data.user.email,          
           phoneNumber: response.data.user.phoneNumber,
-          emailVerified: response.data.user.emailVerified
+          emailVerified: response.data.user.emailVerified,
+          branchId: response.data.user.branchId
         });
       }
 

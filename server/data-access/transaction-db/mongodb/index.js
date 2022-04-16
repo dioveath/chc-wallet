@@ -37,47 +37,60 @@ async function addTransaction(transactionInfo){
     branchId: transaction.getBranchId(),
   };
 
-  console.log(newTransaction.transactionType);
-
   console.log(newTransaction.date.split('-')[0], newTransaction.date.split('-')[1]);
   let splittedDate = newTransaction.date.split('-');
+  let year = splittedDate[0];
+  let month = splittedDate[1];
   let foundWallet = await walletAccess.findWalletBy({
     branchId: newTransaction.branchId,
-    year: splittedDate[0],
-    month: splittedDate[1]
+    year: year,
+    month: month
   });
 
   if(foundWallet !== null) {
-    let isGreater = (splittedDate[2]) > foundWallet.data.length;
-    let len = isGreater ? (splittedDate[2]) : foundWallet.data.length;
-    let startIndex = !isGreater ? (splittedDate[2] - 1) : foundWallet.data.length - 1;
-
-    for(let i = startIndex; i < len; i++){
-      if(isGreater) {
-        if(i == parseInt(splittedDate[2] - 1)) {
-          if(newTransaction.transactionType == "Income")
-            foundWallet.data.push(foundWallet.data[startIndex] + parseInt(newTransaction.amount));
-          else
-            foundWallet.data.push(foundWallet.data[startIndex] - parseInt(newTransaction.amount));            
-        }
-        else
-          foundWallet.data.push(foundWallet.data[startIndex]);
-      }
-      else {
-        if(newTransaction.transactionType == "Income")
-          foundWallet.data[i] += parseInt(newTransaction.amount);
-        else
-          foundWallet.data[i] -= parseInt(newTransaction.amount);          
-      }
-    }
-
-    let updatedWallet = await walletAccess.updateWallet(foundWallet.id, foundWallet);
-    console.log("wallet updated!");
+    addTransactionToWallet(newTransaction, foundWallet, splittedDate[2]);
+  } else {
+    console.log("wallet not found!, creating new wallet!");
+    let newWallet = await walletAccess.addWallet({
+      branchId: newTransaction.branchId,
+      year: year,
+      month: month,
+      data: []
+    });
+    
+    addTransactionToWallet(newTransaction, newWallet, splittedDate[2]);
   }
 
-
-  console.log(foundWallet.data);
+  // console.log(foundWallet.data);
   return Transaction.create(newTransaction).then(serialize).catch(errorFormatter);
+}
+
+async function addTransactionToWallet(transaction, wallet, day){
+  let isGreater = (day) > wallet.data.length;
+  let len = isGreater ? (day) : wallet.data.length;
+  let startIndex = !isGreater ? (day - 1) : wallet.data.length - 1;
+
+  for(let i = startIndex; i < len; i++){
+    if(isGreater) {
+      if(i == parseInt(day - 1)) {
+        if(transaction.transactionType == "Income")
+          wallet.data.push(wallet.data[startIndex] ?? 0 + parseInt(transaction.amount));
+        else
+          wallet.data.push(wallet.data[startIndex] ?? 0 - parseInt(transaction.amount));            
+      }
+      else
+        wallet.data.push(wallet.data[startIndex] ?? 0);
+    }
+    else {
+      if(transaction.transactionType == "Income")
+        wallet.data[i] += parseInt(transaction.amount);
+      else
+        wallet.data[i] -= parseInt(transaction.amount);          
+    }
+  }
+
+  let updatedWallet = await walletAccess.updateWallet(wallet.id, wallet);
+  console.log("wallet updated!");  
 }
 
 

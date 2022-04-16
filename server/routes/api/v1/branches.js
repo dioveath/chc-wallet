@@ -5,7 +5,6 @@ const router = Router();
 const branchController = require('../../../controllers/branch');
 const makeExpressCallback = require('./helpers/express-callback');
 
-
 router.get('/', makeExpressCallback(branchController.listBranches));
 router.get('/:id', makeExpressCallback(branchController.getBranch));
 router.post('/', makeExpressCallback(branchController.createBranch));

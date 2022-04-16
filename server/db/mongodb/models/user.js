@@ -7,7 +7,7 @@ var UserSchema = new Schema({
   password: String,
   email: { type: String, unique: true }, 
   phoneNumber: { type: String, unique: true },
-  branchId: { type: String },
+  branchId: { type: Schema.Types.ObjectId },
   emailVerified: { type: Boolean }
 }, { timestamps: true });
 

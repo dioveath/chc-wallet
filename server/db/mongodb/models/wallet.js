@@ -6,7 +6,7 @@ var WalletSchema = new Schema({
   branchId: String,
   year: Number,
   month: Number,
-  data: Array
+  data: Array,
 }, { timestamps: true });
 
 

@@ -30,6 +30,7 @@ async function addUser(userInfo){
     password: user.getPassword(),
     email: user.getEmail(),
     phoneNumber: user.getPhoneNumber(),
+    branchId: user.getBranchId(),
     emailVerified: false,
   };
 

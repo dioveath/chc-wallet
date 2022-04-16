@@ -34,8 +34,6 @@ async function addWallet(walletInfo){
     data: wallet.getData()
   };
 
-  
-
   return Wallet.create(newWallet).then(serialize).catch(errorFormatter);
 }
 

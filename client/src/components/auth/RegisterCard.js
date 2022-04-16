@@ -15,9 +15,11 @@ import {
   Link,
   Select
 } from '@chakra-ui/react';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons';
 import { Link as RouterLink } from 'react-router-dom';
+import axios from 'axios';
+import config from '../../config/config.js';
 import useAuth from '../../hooks/Auth.js';
 
 
@@ -28,20 +30,29 @@ export default function RegisterCard() {
   const phoneNumber = useRef();
   const password = useRef();
   const confirmPassword = useRef();
+  const branch = useRef();
 
-  const Branches = [
-    "chcInstitute",
-    "chcGaming",
-    "chcProductions"
-  ];  
+  const [ branches, setBranches ] = useState([]);
+  useEffect(() => {
 
-  const [ selectedBranch, setSelectedBranch] = useState(Branches[0]);
-  const onBranchChange = (e) => {
-    setSelectedBranch(e.target.value);
-  };
+    (async () => {
+      const options = {
+        method: 'GET',
+        url: `${config.serverUrl}/api/v1/branch`,
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      };
+
+      let response = await axios.request(options);
+      if(response.data.status === 'success') {
+        setBranches(response.data.branches);
+      }
+
+    })();
+  }, [branches.length]);  
 
   const { register, loading, registerError } = useAuth(); 
-
   const handleSubmit = async (e) => {
     
     var userData = {
@@ -49,7 +60,7 @@ export default function RegisterCard() {
       email: email.current.value,
       phoneNumber: phoneNumber.current.value,
       password: password.current.value,
-      branchId: selectedBranch
+      branchId: branch.current.value
     };
 
     register(userData);
@@ -90,14 +101,12 @@ export default function RegisterCard() {
               <FormLabel> Phone Number </FormLabel>
               <Input type="number" ref={phoneNumber}/>
             </FormControl>
-
-
             
             <FormControl id="branchId" isRequired>
-              <FormLabel> Branch ID  </FormLabel>
-              <Select value={selectedBranch} onChange={onBranchChange}>
+              <FormLabel> Branch </FormLabel>
+              <Select ref={branch}>
                 {
-                  Branches.map((b) => <option value={b} key={b}> {b} </option>)
+                  branches.map((b) => <option value={b.id} key={b.id}> {b.name} </option>)
                 }
               </Select>                          
             </FormControl>

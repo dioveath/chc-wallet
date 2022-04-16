@@ -9,6 +9,7 @@ const _serializeSingle = (user) => {
     "email": user.email,
     "phoneNumber": user.phoneNumber,
     "emailVerified": user.emailVerified,
+    "branchId": user.branchId,
     "createdAt": user.createdAt,
     "updatedAt": user.updatedAt
   };
