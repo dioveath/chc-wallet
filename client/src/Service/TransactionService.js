@@ -31,7 +31,7 @@ const TransactionService = {
     }
   }, 
 
-  addTrasaction: async (transaction, branchId, accessToken) => {
+  addTrasaction: async (transaction, branchCode, accessToken) => {
     try {
       if(!isValidTransaction(transaction)) {
         return       {
@@ -53,13 +53,12 @@ const TransactionService = {
         data: {
           id: transactionId,
           ...transaction,
-          branchId: branchId          
+          branchCode: branchCode
         }
       };
 
       let response = await axios.request(options);
       console.log("transaction added successfully with id: " + transactionId);
-      console.log(response.data);
       return {
         transaction: response.data.newTransaction
       };        
@@ -68,6 +67,29 @@ const TransactionService = {
         error: e.response.data.errorList
       };
     }
+  },
+
+  deleteTransaction: async (transactionId, accessToken) => {
+    try {
+      let options = {
+        method: 'DELETE',
+        url: `${config.serverUrl}/api/v1/transactions/${transactionId}`,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + accessToken
+        }
+      };
+
+      let response = await axios.request(options);
+      console.log("transaction deleted successfully of id: " + transactionId);
+      return {
+        transaction: response.data
+      };
+    } catch (e){
+      return {
+        error: e.response.data.errorList
+      };
+    }    
   }
 
   

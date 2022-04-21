@@ -26,7 +26,7 @@ async function addBranch(branchInfo){
   var branch = await makeBranch(branchInfo);
 
   var newBranch = {
-    branchId: branch.getBranchId(),
+    codeName: branch.getCodeName(),
     name: branch.getName(),
     admin: branch.getAdmin(),
     borderColor: branch.getBorderColor(),    

@@ -11,17 +11,19 @@ const walletAccess = require('../../wallet-db/index.js');
 
 function listTransactions(httpQuery){
   const { query, ...paginateQuery } = httpQuery;
+
   let paginationParams = [
-    JSON.parse(query),
-    paginateQuery
+    JSON.parse(query ?? "{}"),
+    paginateQuery ?? {}
   ];
+  
   return Transaction.paginate(...paginationParams).then((result) => {
     const { docs, ...pagination } = result;
     return {
       pagination,
       transactions: serialize(docs)
     };
-  } ).catch(errorFormatter);
+  }).catch(errorFormatter);
 }
 
 function findTransactionBy(prop, val){
@@ -46,14 +48,14 @@ async function addTransaction(transactionInfo){
     transactionType: transaction.getTransactionType(),
     date: transaction.getDate(),
     doneBy: transaction.getDoneBy(),
-    branchId: transaction.getBranchId(),
+    branchCode: transaction.getBranchCode(),
   };
 
   let splittedDate = newTransaction.date.split('-');
   let year = splittedDate[0];
   let month = splittedDate[1];
   let foundWallet = await walletAccess.findWalletBy({
-    branchId: newTransaction.branchId,
+    branchCode: newTransaction.branchCode,
     year: year,
     month: month
   });
@@ -63,7 +65,7 @@ async function addTransaction(transactionInfo){
   } else {
     console.log("wallet not found!, creating new wallet!");
     let previousMonthWallet = await walletAccess.findWalletBy({
-      branchId: newTransaction.branchId,
+      branchCode: newTransaction.branchCode,
       year: month == 1 ? year - 1 : year,
       month: month == 1 ? 12 : month
     });
@@ -72,7 +74,7 @@ async function addTransaction(transactionInfo){
     let previousMonthTotal = previousMonthWallet !== null ? previousMonthWallet.totalAmount : 0;
 
     let newWallet = await walletAccess.addWallet({
-      branchId: newTransaction.branchId,
+      branchCode: newTransaction.branchCode,
       year: year,
       month: month,
       data: [previousMonthTotal],
@@ -94,7 +96,6 @@ async function addTransactionToWallet(transaction, wallet, day){
     if(isGreater) {
       if(i == parseInt(day - 1)) {
         if(transaction.transactionType == "Income") {
-          console.log("fsad");
           wallet.data.push((wallet.data[startIndex] ?? 0) + parseInt(transaction.amount));
         }
         else

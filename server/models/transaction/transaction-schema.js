@@ -9,7 +9,7 @@ const transactionUpdateSchema = Joi.object().keys({
   transactionType: Joi.string().alphanum().max(20),
   date: Joi.date().min('1-1-2021').max('1-1-2030'), // MM-DD-YYYY
   doneBy: Joi.objectId(),
-  branchId: Joi.string().alphanum().min(3).max(30)
+  branchCode: Joi.string().alphanum().min(3).max(30)
 }).min(1);
 
 const transactionSchema = transactionUpdateSchema.options({ presence: 'required'});

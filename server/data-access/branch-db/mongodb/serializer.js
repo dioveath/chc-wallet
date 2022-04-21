@@ -5,7 +5,7 @@
 const _serializeSingle = (branch) => {
   return {
     "id": branch._id,
-    "branchId": branch.branchId,
+    "codeName": branch.codeName,
     "name": branch.name,
     "admin": branch.admin,
     "borderColor": branch.borderColor,

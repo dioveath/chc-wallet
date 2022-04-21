@@ -13,7 +13,7 @@ const _serializeSingle = (transaction) => {
     "transactionType": transaction.transactionType,
     "date": transaction.date,
     "doneBy": transaction.doneBy,
-    "branchId": transaction.branchId,
+    "branchCode": transaction.branchCode,
     "createdAt": transaction.createdAt,
     "updatedAt": transaction.updatedAt
   };

@@ -19,7 +19,7 @@ export function AuthProvider(props){
     localUser = {userId: userId, accessToken: accessToken};
 
   const [user, setUser] = useState(localUser);
-  const [userData, setUserData] = useState({ id: 0});
+  const [userData, setUserData] = useState({id: 0});
   const [error, setError] = useState([]);
   const [loading, setLoading] = useState(false);
   const [registerError, setRegisterError] = useState([]);

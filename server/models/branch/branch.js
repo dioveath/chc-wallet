@@ -1,6 +1,6 @@
 var buildMakeBranch = function(branchValidator){
   return async ({
-    branchId,
+    codeName,
     name,
     admin,
     borderColor,
@@ -11,7 +11,7 @@ var buildMakeBranch = function(branchValidator){
   } = {}) => {
 
     var error = branchValidator({
-      branchId,
+      codeName,
       name,
       admin,
       borderColor,
@@ -24,7 +24,7 @@ var buildMakeBranch = function(branchValidator){
     if(error instanceof Object) throw new Error(error.errorList);
 
     return Object.freeze({
-      getBranchId: () => branchId,
+      getCodeName: () => codeName,
       getName: () => name,
       getAdmin: () => admin,
       getBorderColor: () => borderColor,

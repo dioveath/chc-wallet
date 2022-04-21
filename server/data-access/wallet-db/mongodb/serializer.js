@@ -5,7 +5,7 @@
 const _serializeSingle = (wallet) => {
   return {
     "id": wallet._id,    
-    "branchId": wallet.branchId,
+    "branchCode": wallet.branchCode,
     "year": wallet.year,
     "month": wallet.month,
     "data": wallet.data,

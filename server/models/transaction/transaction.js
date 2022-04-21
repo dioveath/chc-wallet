@@ -8,7 +8,7 @@ var buildMakeTransaction = function(transactionValidator){
     transactionType,
     date,
     doneBy,
-    branchId
+    branchCode
   } = {}) => {
 
     var error = transactionValidator({
@@ -20,7 +20,7 @@ var buildMakeTransaction = function(transactionValidator){
       transactionType,
       date,
       doneBy,
-      branchId
+      branchCode
     });
 
     if(error instanceof Object) throw new Error(error.errorList);
@@ -34,7 +34,7 @@ var buildMakeTransaction = function(transactionValidator){
       getTransactionType: () => transactionType,
       getDate: () => date,
       getDoneBy: () => doneBy,
-      getBranchId: () => branchId
+      getBranchCode: () => branchCode
     });
 
   };

@@ -3,7 +3,7 @@ const uniqueValidator = require('mongoose-unique-validator');
 
 var Schema = mongoose.Schema;
 var WalletSchema = new Schema({
-  branchId: String,
+  branchCode: String,
   year: Number,
   month: Number,
   data: Array,

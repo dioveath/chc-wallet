@@ -60,7 +60,7 @@ export const options = {
       },
       ticks: {
         callback: (value, index, ticks) => {
-          console.log(value);
+          // console.log(value);
           // let newStr = ""; 
           // if(value > 1000) {
           //   value /= 1000;

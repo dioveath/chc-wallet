@@ -13,18 +13,23 @@ import {
   TableContainer,
   Button,
   HStack,
-  Box
+  Box,
+  useColorModeValue,
+  useToast  
 } from '@chakra-ui/react';
+import { AiFillDelete } from 'react-icons/ai';
+
 import axios from 'axios';
 import useAuth from '../../hooks/Auth.js';
 import config from '../../config/config.js';
+import { TransactionService } from '../../Service/TransactionService.js';
 
-export default function TransactionList(){
 
-  const [transactions, setTransactions] = useState([]);
+
+export default function TransactionList(props){
+
   const { user, userData } = useAuth();
-  const [page, setPage] = useState(1);
-  const [pagination, setPagination] = useState({page: 0});
+  const toast = useToast();
 
   const columns = useMemo(() => [
     {
@@ -58,60 +63,29 @@ export default function TransactionList(){
     }
   ], []);
 
-
-  useEffect(() => {
-
-    (async () => {
-
-      try {
-
-        if(user == null) return;
-        const options = {
-          method: 'GET',
-          url: `${config.serverUrl}/api/v1/transactions`,
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: 'Bearer ' + user.accessToken
-          },
-          params: {
-            limit: 6,
-            page: page,
-            query: {
-              "branchId": "chcGaming"
-            }
-          }
-        };
-        
-        let response = await axios.request(options);
-
-        setTransactions(response.data.transactions);
-        setPagination(response.data.pagination);
-
-        console.log(response);
-
-      } catch (e){
-        // console.log(e);
-        // setTransactions([]);
-      }
-
-    })();
-
-  }, [page]);
+  const bgColor = useColorModeValue('#FFFFFF', '#1A202C');
 
   return (
     <>
-    <TableContainer>
-      <Table>
-        <Thead>
-          <Tr>
-            { columns.map((h) => <Th {...(h.Header === "Amount" ? {isNumeric: ''} : {})}> { h.Header }</Th>)}
-          </Tr>
-        </Thead>
-        <Tbody>
+      <TableContainer>
+        <Table>
+          <Thead>
+            <Tr>
+              { columns.map((h) => <Th key={h.Header} {...(h.Header === "Amount" ? {isNumeric: ''} : {})}> { h.Header }</Th>)}
+
+              <Th bg={bgColor} style={{
+                "position": "sticky",
+                "top": 0,
+                "right": 0
+              }}> Action </Th>
+
+            </Tr>
+          </Thead>
+          <Tbody>
             {
-              transactions.map((t) => {
+              props.transactions.map((t) => {
                 return (
-                  <Tr>
+                  <Tr key={t.id}>
                     <Td> {t.id.substring(0, 6)}... </Td>
                     <Td> {t.destination} </Td>
                     <Td> {t.amount} </Td>
@@ -119,27 +93,74 @@ export default function TransactionList(){
                     <Td> {t.category} </Td>
                     <Td> {t.date.substring(0, 10)} </Td>
                     <Td> {t.doneBy?.substring(0,6)}... </Td>
+
+                    <Td bg={bgColor} style={{
+                      "position": "sticky",
+                      "top": 0,
+                      "right": 0
+                    }}>
+
+                      <AiFillDelete
+                        _hover={{ color: "red" }}
+                        cursor="pointer"
+                        onClick={ async () => {
+                          const { transaction, error } = await TransactionService.deleteTransaction(t.id, user.accessToken);
+
+                          if(error != undefined && error != null) {
+                            error.forEach((e) => {
+                              toast({
+                                title: 'Transaction Add Failed',
+                                description: e,
+                                status: 'error',
+                                duration: 3000,
+                                isClosable: true
+                              });                
+                            });
+                          } else {
+                            toast({
+                              title: 'Transaction Deleted Successfully',
+                              description: `Transaction ID: ${transaction.deleted.id}`,
+                              status: 'info',
+                              duration: 3000,
+                              isClosable: true
+                            });
+
+                            props.setTransactions([
+                              ...props.transactions.filter((t) => t.id !== transaction.deleted.id)
+                            ]);
+
+                          }                          
+
+                        }}/>
+
+                    </Td>
+
                   </Tr>
                 );
               })
             }
-        </Tbody>
-        <Tfoot>
-          <Tr>
-            { columns.map((h) => <Th> { h.Header }</Th>)}
-          </Tr>
-          <Tr>
+          </Tbody>
+          <Tfoot>
+            <Tr>
+              { columns.map((h) => <Th key={h.Header}> { h.Header }</Th>)}
+              <Th bg={bgColor} style={{
+                "position": "sticky",
+                "top": 0,
+                "right": 0
+              }}> Action </Th>            
+            </Tr>
+            <Tr>
+              
+            </Tr>
+          </Tfoot>
+        </Table>
 
-          </Tr>
-        </Tfoot>
-      </Table>
-
-    </TableContainer>
+      </TableContainer>
       <Box height="0.5rem"></Box>
       <HStack spacing='1rem'>
         {
-          Array.from({length: pagination.totalPages}, (_,i) => i+1).map((i) =>
-            <Button variant={page == i ? 'solid' : 'outline'} colorScheme='teal' key={i} onClick={() => { setPage(i); }}>
+          Array.from({length: props.pagination.totalPages}, (_,i) => i+1).map((i) =>
+            <Button variant={props.page == i ? 'solid' : 'outline'} colorScheme='teal' key={i} onClick={() => { props.setPage(i); }}>
               { i }
             </Button>)
         }    

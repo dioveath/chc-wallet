@@ -28,7 +28,7 @@ async function addWallet(walletInfo){
   var wallet = await makeWallet(walletInfo);
 
   var newWallet = {
-    branchId: wallet.getBranchId(),
+    branchCode: wallet.getBranchCode(),
     year: wallet.getYear(),
     month: wallet.getMonth(),
     data: wallet.getData(),

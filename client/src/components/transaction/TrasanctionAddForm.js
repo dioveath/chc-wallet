@@ -25,7 +25,7 @@ import config from '../../config/config.js';
 import useAuth from '../../hooks/Auth.js';
 import { TransactionService } from '../../Service/TransactionService.js';
 
-export default function TransactionAddForm() {
+export default function TransactionAddForm(props) {
   const toast = useToast();
   const source = useRef();
   const destination = useRef();
@@ -57,9 +57,13 @@ export default function TransactionAddForm() {
 
   const { user, userData } = useAuth();
   const [ branch, setBranch ] = useState({branchId: 0});
+
+
   useEffect(() => {
+    if(userData.id == 0) return;
 
     (async () => {
+
       const options = {
         method: 'GET',
         url: `${config.serverUrl}/api/v1/branch/${userData.branchId}`,
@@ -70,7 +74,6 @@ export default function TransactionAddForm() {
 
       try {
         let response = await axios.request(options);
-        console.log(response.data);
         if(response.data.status === 'success') {
           setBranch(response.data.branch);
         } else {
@@ -169,7 +172,18 @@ export default function TransactionAddForm() {
 
         <Button bg="purple" color="white" _hover={{bg: "purple.900"}} onClick={async (e)=> {
 
-          const { transaction, error } =await TransactionService.addTrasaction({
+          if(branch.branchId == 0){
+              toast({
+                title: 'Transaction Add Failed.',
+                description: "Couldn't load the branch",
+                status: 'error',
+                duration: 3000,
+                isClosable: true
+              });
+            return;
+          }
+
+          const newTransaction = {
             "source": source.current.value,
             "destination": destination.current.value,
             "remarks": remarks.current.value,
@@ -178,8 +192,9 @@ export default function TransactionAddForm() {
             "date": dateTime.current.value,
             "category": category.current.value,
             "doneBy": user.userId,
-          }, branch.branchId, user.accessToken);
+          };
 
+          const { transaction, error } = await TransactionService.addTrasaction(newTransaction, branch.codeName, user.accessToken);
           if(error != undefined && error != null) {
             error.forEach((e) => {
               toast({
@@ -197,7 +212,12 @@ export default function TransactionAddForm() {
               status: 'success',
               duration: 3000,
               isClosable: true
-            });                             
+            });
+
+            props.setTransactions([
+              ...props.transactions,
+              transaction
+            ]);
           }
 
         }}>

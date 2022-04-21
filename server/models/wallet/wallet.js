@@ -1,6 +1,6 @@
 var buildMakeTransaction = function(transactionValidator){
   return async ({
-    branchId,
+    branchCode,
     year,
     month,
     data,
@@ -8,7 +8,7 @@ var buildMakeTransaction = function(transactionValidator){
   } = {}) => {
 
     var error = transactionValidator({
-      branchId,
+      branchCode,
       year,
       month,
       data,
@@ -18,7 +18,7 @@ var buildMakeTransaction = function(transactionValidator){
     if(error instanceof Object) throw new Error(error.errorList);
 
     return Object.freeze({
-      getBranchId: () => branchId,
+      getBranchCode: () => branchCode,
       getYear: () => year,
       getMonth: () => month,
       getData: () => data,

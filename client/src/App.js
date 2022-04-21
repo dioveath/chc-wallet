@@ -25,12 +25,10 @@ function App() {
   const { user, userData, setUserData, updateToken } = useAuth();
 
   useEffect(() => {
-
     updateToken();
+    if(user == null) return;
 
     (async () => {
-
-      if(user == null) return;
 
       const options = {
         method: 'GET',

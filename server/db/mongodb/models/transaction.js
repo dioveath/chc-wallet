@@ -12,7 +12,7 @@ var TransactionSchema = new Schema({
   transactionType: String,
   date: Date,
   doneBy: { type: Schema.Types.ObjectId },
-  branchId: String
+  branchCode: String
 }, { timestamps: true });
 
 
