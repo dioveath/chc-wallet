@@ -138,7 +138,27 @@ async function updateTransaction(id, updateTransactionInfo){
 }
 
 
-function deleteTransaction(id){
+async function deleteTransaction(id){
+
+  let transaction = await findTransactionById(id);
+  let splittedDate = transaction.date.split('-');
+  let year = splittedDate[0];
+  let month = splittedDate[1];  
+  let foundWallet = await walletAccess.findWalletBy({
+    branchCode: transaction.branchCode,
+    year: year,
+    month: month
+  });
+
+  if(foundWallet !== null){
+    if(transaction.transactionType == 'Income')
+      transaction.transactionType = 'Expense';
+    else
+      transaction.transactionType = 'Income';
+
+    addTransactionToWallet(transaction, foundWallet, splittedDate[2]);
+  }
+
   return Transaction.findByIdAndDelete(id)
     .then(res => {
       if(!res)

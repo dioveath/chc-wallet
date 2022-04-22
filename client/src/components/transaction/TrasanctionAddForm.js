@@ -74,13 +74,14 @@ export default function TransactionAddForm(props) {
 
       try {
         let response = await axios.request(options);
+        console.log(response);
         if(response.data.status === 'success') {
           setBranch(response.data.branch);
         } else {
-          setBranch({branchId: 0});          
+          console.log(response.data);
         }
       } catch(e){
-        setBranch({branchId: 0});
+        console.log(e.message);
       }
 
 
