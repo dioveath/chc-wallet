@@ -141,7 +141,7 @@ async function updateTransaction(id, updateTransactionInfo){
 async function deleteTransaction(id){
 
   let transaction = await findTransactionById(id);
-  let splittedDate = transaction.date.split('-');
+  let splittedDate = transaction.date.toISOString().substring(10, 0).split('-');
   let year = splittedDate[0];
   let month = splittedDate[1];  
   let foundWallet = await walletAccess.findWalletBy({
