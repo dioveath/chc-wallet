@@ -23,7 +23,7 @@ program.name('test')
 program.name('users')
   .description('Handles all Users')
   .option('-ls, --list')
-  .option('-da, --dropall')
+  .option('-da, --drop-all')
   .action(async (options) => {
     if(options.list) {
       console.table(await listUsers());
@@ -39,7 +39,7 @@ program.name('users')
 program.name('transac')
   .description('Handles all Transactions')
   .option('-ls, --list')
-  .option('-da, --dropall')
+  .option('-da, --drop-all')
   .action(async (options) => {
     if(options.list) {
       console.table((await listTransactions({})).transactions);
@@ -55,7 +55,7 @@ program.name('transac')
 program.name('wallet')
   .description('Handles all Wallets')
   .option('-ls, --list')
-  .option('-da, --dropall')
+  .option('-da, --drop-all')
   .action(async (options) => {
     if(options.list) {
       console.table((await listWallets({})));
@@ -71,7 +71,7 @@ program.name('wallet')
 // program.name('branch')
 //   .description('Handles all Branches')
 //   .option('-ls, --list')
-//   .option('-da, --dropall')
+//   .option('-da, --drop-all')
 //   .action(async (options) => {
 //     if(options.list) {
 //       console.table((await listBranches({})));

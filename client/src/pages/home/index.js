@@ -135,8 +135,16 @@ function HomePage (){
         let dataResponse = await axios.request(axiosDataOptions);
         let branchesResponse = await axios.get(`${config.serverUrl}/api/v1/branch`);
 
+        let prevMonth = new Date(new Date().setDate(0));
         let branches = branchesResponse.data.branches;
-        let labels = Array.from({length: 10}, (_, i) => i+1);
+        let labels = Array.from({length: 10}, (_, i) => {
+          let dayNum = today.getDate() - (9 - i);
+          if(dayNum > 0){
+            return dayNum + ' ' + today.toLocaleString('default', { month: 'short'});
+          } else {
+            return prevMonth.getDate() - (9 - i) + ' ' + prevMonth.toLocaleString('default', { month: 'short'});
+          }
+        });
         let newData = JSON.parse(JSON.stringify(financeData));
         let newOptions = JSON.parse(JSON.stringify(chartOptions));
 
@@ -145,11 +153,25 @@ function HomePage (){
         newData.labels = labels;
         newData.datasets = [];
 
-        dataResponse.data.wallets.forEach((branchData) => {
+        dataResponse.data.wallets.forEach(async (branchData) => {
           let branch = branches.find(branch => branch.branchId == branchData.branchId);
           if(branch === undefined) return;
 
           let datasetsData = branchData.data.filter((e, i) => i >= (branchData.data.length - 10));
+
+          // if(datasetsData.length < 10) {
+            // const axiosDataOptions = {
+            //   method: 'GET',
+            //   url: `${config.serverUrl}/api/v1/walletdata?year=${prevMonth.getFullYear()}&month=${today.prevMonth()+1}`,
+            //   headers: {
+            //     'Content-Type': 'application/json',
+            //     Authorization: 'Bearer ' + user.accessToken
+            //   }
+            // };
+
+            // let prevMonthDataResponse = await axios.request(axiosDataOptions);
+            // console.log(prevMonthDataResponse);
+          // } 
 
           newData.datasets.push({
             label: branch.name,
