@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import Navbar from '../../components/Navbar.js';
 import Footer from '../../components/Footer.js';
-import { Box } from '@chakra-ui/react';
+import { Box, Text } from '@chakra-ui/react';
 import TransactionAddForm from '../../components/transaction/TrasanctionAddForm.js';
 import TransactionList from '../../components/transaction/TransactionList.js';
 
@@ -15,7 +15,7 @@ import config from '../../config/config.js';
 
 function FinancePage(props){
 
-  const { user } = useAuth();
+  const { user, userData } = useAuth();
   const navigate = useNavigate();
 
   const [transactions, setTransactions] = useState([]);
@@ -29,6 +29,9 @@ function FinancePage(props){
   }, [user]);
 
   useEffect(() => {
+
+    if(userData.id == 0) return;
+
     (async () => {
 
       try {
@@ -44,7 +47,7 @@ function FinancePage(props){
             limit: 6,
             page: page,
             query: {
-              "branchId": "chcGaming"
+              "branchCode": userData.branch.codeName
             }
           }
         };
@@ -80,6 +83,8 @@ function FinancePage(props){
         lg: "0rem 12rem",
       }}>
         <Box m={"4rem"}></Box>
+        <Text fontSize="4xl" fontWeight="700"> Welcome to { userData?.branch?.name }! </Text>
+        <Box m={"2rem"}></Box>        
         <TransactionList {...listProps}/>
         <Box m={"4rem"}></Box>        
         <TransactionAddForm {...{transactions, setTransactions}}/>

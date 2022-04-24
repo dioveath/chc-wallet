@@ -16,7 +16,7 @@ function listTransactions(httpQuery){
     JSON.parse(query ?? "{}"),
     paginateQuery ?? {}
   ];
-  
+
   return Transaction.paginate(...paginationParams).then((result) => {
     const { docs, ...pagination } = result;
     return {
@@ -80,8 +80,11 @@ async function addTransaction(transactionInfo){
       totalAmount: previousMonthTotal
     });
 
+    console.log(newWallet);
+
     addTransactionToWallet(newTransaction, newWallet, splittedDate[2]);
   }
+
 
   return Transaction.create(newTransaction).then(serialize).catch(errorFormatter);
 }
@@ -112,9 +115,9 @@ async function addTransactionToWallet(transaction, wallet, day){
   }
 
   if(transaction.transactionType == "Income") {
-    transaction.totalAmount += parseInt(transaction.amount);
+    wallet.totalAmount += parseInt(transaction.amount);
   } else {
-    transaction.totalAmount -= parseInt(transaction.amount);    
+    wallet.totalAmount -= parseInt(transaction.amount);    
   }
 
   console.log(wallet);
@@ -140,6 +143,7 @@ async function updateTransaction(id, updateTransactionInfo){
 async function deleteTransaction(id){
 
   let transaction = await findTransactionById(id);
+  if(transaction == null) throw ["Transaction not found with id" + id];
   let splittedDate = transaction.date.toISOString().substring(10, 0).split('-');
   let year = splittedDate[0];
   let month = splittedDate[1];  

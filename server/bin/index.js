@@ -35,21 +35,21 @@ const program = new Command();
 //     }
 //   });
 
-// program.name('transac')
-//   .description('Handles all Transactions')
-//   .option('-ls, --list')
-//   .option('-da, --drop-all')
-//   .action(async (options) => {
-//     if(options.list) {
-//       console.table((await listTransactions({})).transactions);
-//       console.log("All Transactions listed!");
-//     } else if(options.dropAll){
-//       console.log(await dropTransactions());
-//       console.log("Dropped all Transactions!");
-//     } else {
-//       console.log("You can use help here!");
-//     }
-//   });
+program.name('transac')
+  .description('Handles all Transactions')
+  .option('-ls, --list')
+  .option('-da, --drop-all')
+  .action(async (options) => {
+    if(options.list) {
+      console.table((await listTransactions({})).transactions);
+      console.log("All Transactions listed!");
+    } else if(options.dropAll){
+      console.log(await dropTransactions());
+      console.log("Dropped all Transactions!");
+    } else {
+      console.log("You can use help here!");
+    }
+  });
 
 // program.name('wallet')
 //   .description('Handles all Wallets')

@@ -56,7 +56,7 @@ export default function TransactionAddForm(props) {
   const dateTime = useRef();
 
   const { user, userData } = useAuth();
-  const [ branch, setBranch ] = useState({branchId: 0});
+  const [ branch, setBranch ] = useState({id: 0});
 
 
   useEffect(() => {
@@ -74,7 +74,6 @@ export default function TransactionAddForm(props) {
 
       try {
         let response = await axios.request(options);
-        console.log(response);
         if(response.data.status === 'success') {
           setBranch(response.data.branch);
         } else {
@@ -86,7 +85,7 @@ export default function TransactionAddForm(props) {
 
 
     })();
-  }, [branch.branchId, userData.id]);
+  }, [branch.id, userData.id]);
 
   return (
     <>
@@ -173,7 +172,7 @@ export default function TransactionAddForm(props) {
 
         <Button bg="purple" color="white" _hover={{bg: "purple.900"}} onClick={async (e)=> {
 
-          if(branch.branchId == 0){
+          if(branch.id == 0){
               toast({
                 title: 'Transaction Add Failed.',
                 description: "Couldn't load the branch",

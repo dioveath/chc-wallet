@@ -30,29 +30,50 @@ function App() {
 
     (async () => {
 
-      const options = {
-        method: 'GET',
-        url: `${config.serverUrl}/api/v1/user/${user.userId}`,
-        headers: {
-          'Content-Type': 'application/json',
+      try {
+
+        const options = {
+          method: 'GET',
+          url: `${config.serverUrl}/api/v1/user/${user.userId}`,
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        };
+
+        const response = await axios.request(options);
+
+        if(response.data.status != 'fail') {
+
+
+          const newOptions = {
+            method: 'GET',
+            url: `${config.serverUrl}/api/v1/branch/${response.data.user.branchId}`,
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          };
+
+          const newResponse = await axios.request(newOptions);
+          setUserData({
+            id: response.data.user.id,
+            fullName: response.data.user.fullName,
+            email: response.data.user.email,          
+            phoneNumber: response.data.user.phoneNumber,
+            emailVerified: response.data.user.emailVerified,
+            branchId: response.data.user.branchId,
+            branch: newResponse.data.branch
+          });
+
         }
-      };
 
-      const response = await axios.request(options);
-
-      if(response.data.status != 'fail') {
-        setUserData({
-          id: response.data.user.id,
-          fullName: response.data.user.fullName,
-          email: response.data.user.email,          
-          phoneNumber: response.data.user.phoneNumber,
-          emailVerified: response.data.user.emailVerified,
-          branchId: response.data.user.branchId
-        });
+      } catch(e){
+        console.log(e.message);
       }
 
     })();
-  }, [userData.id]);
+  }, [userData.id, user]);
+
+
 
 
   return (

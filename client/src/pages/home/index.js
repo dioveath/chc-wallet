@@ -185,7 +185,6 @@ function HomePage (){
               }
 
               datasetsData = prevMonthDatasets.concat(datasetsData);
-              console.log(datasetsData);
             } catch (e){
               console.log(e.message);
             }
@@ -194,8 +193,6 @@ function HomePage (){
             let fillArray = Array.from({length: noOfDatasNeedToFullFill}, (_, i) => branchData.totalAmount);
             datasetsData = datasetsData.concat(fillArray);
           }
-
-          console.log(datasetsData);
 
           newData.datasets.push({
             label: branch.name,
