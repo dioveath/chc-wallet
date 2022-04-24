@@ -5,8 +5,9 @@ module.exports = function makeListWallets(walletAccess){
     const headers = {
       'Content-Type': 'application/json'
     };
+
     try {
-      const wallets = await walletAccess.listWallets();
+      const wallets = await walletAccess.findWalletBy(httpRequest.query);
       return {
         headers,
         statusCode: 200,

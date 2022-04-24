@@ -13,9 +13,7 @@ function listWallets(){
 }
 
 function findWalletBy(props){
-  console.log(props);
-  // if(prop === 'id') prop = '_id';
-  return Wallet.find(props).then(res => serialize(res[0])).catch(errorFormatter);
+  return Wallet.find(props).then(serialize).catch(errorFormatter);
 }
 
 function findWalletById(id){

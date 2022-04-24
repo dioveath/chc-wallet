@@ -133,6 +133,7 @@ function HomePage (){
         };
 
         let dataResponse = await axios.request(axiosDataOptions);
+
         let branchesResponse = await axios.get(`${config.serverUrl}/api/v1/branch`);
 
         let prevMonth = new Date(new Date().setDate(0));
@@ -154,30 +155,53 @@ function HomePage (){
         newData.datasets = [];
 
         dataResponse.data.wallets.forEach(async (branchData) => {
-          let branch = branches.find(branch => branch.branchId == branchData.branchId);
+          let branch = branches.find(branch => branch.codeName == branchData.branchCode);
           if(branch === undefined) return;
 
-          let datasetsData = branchData.data.filter((e, i) => i >= (branchData.data.length - 10));
+          let datasetsData = branchData.data.filter((e, i) => i >= (today.getDate() - 10));
 
-          // if(datasetsData.length < 10) {
-            // const axiosDataOptions = {
-            //   method: 'GET',
-            //   url: `${config.serverUrl}/api/v1/walletdata?year=${prevMonth.getFullYear()}&month=${today.prevMonth()+1}`,
-            //   headers: {
-            //     'Content-Type': 'application/json',
-            //     Authorization: 'Bearer ' + user.accessToken
-            //   }
-            // };
+          if(today.getDate() - 10 <= 0) {
+            try {
+              const axiosDataOptions = {
+                method: 'GET',
+                url: `${config.serverUrl}/api/v1/walletdata?year=${prevMonth.getFullYear()}&month=${prevMonth.getMonth()+1}`,
+                headers: {
+                  'Content-Type': 'application/json',
+                  Authorization: 'Bearer ' + user.accessToken
+                }
+              };
 
-            // let prevMonthDataResponse = await axios.request(axiosDataOptions);
-            // console.log(prevMonthDataResponse);
-          // } 
+              let prevMonthDataResponse = await axios.request(axiosDataOptions);
+              let noOfDaysInPrevMonth = prevMonth.getDate();
+              let prevMonthDatasets = [];
+              let noOfDatasNeedToFullFill = (10 - datasetsData.length);
+
+              if(prevMonthDataResponse.data.wallets.length != 0) {
+                let prevMonthWalletData = prevMonthDataResponse.data.wallets[0];
+                prevMonthDatasets = prevMonthWalletData.data.filter((_, i) => i >= (noOfDaysInPrevMonth - noOfDatasNeedToFullFill) + 1);
+              } else {
+                // prevMonthDatasets
+                prevMonthDatasets = Array.from({length: noOfDatasNeedToFullFill}, (_, i) => 0);
+              }
+
+              datasetsData = prevMonthDatasets.concat(datasetsData);
+              console.log(datasetsData);
+            } catch (e){
+              console.log(e.message);
+            }
+          } else if(datasetsData.length <= 10){
+            let noOfDatasNeedToFullFill = (10 - datasetsData.length);
+            let fillArray = Array.from({length: noOfDatasNeedToFullFill}, (_, i) => branchData.totalAmount);
+            datasetsData = datasetsData.concat(fillArray);
+          }
+
+          console.log(datasetsData);
 
           newData.datasets.push({
             label: branch.name,
             data: datasetsData,
             borderColor: branch.borderColor,
-            backgroundColor: branch.backgroundColor,
+            backgroundColor: branch.borderColor + Math.round(0.6 * 255).toString(16),
             yAxisID: 'y',
             fill: 'start',
             tension: 0.4
@@ -189,6 +213,7 @@ function HomePage (){
           let rentAnnotation = {
             type: 'line',
             borderColor: branch.borderColor,
+            backgroundColor: branch.backgroundColor,
             borderWidth: 2,
             click: function({chart, element}) {
               // console.log(chart, element);

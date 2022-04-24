@@ -38,7 +38,6 @@ function findTransactionById(id){
 async function addTransaction(transactionInfo){
   var transaction = await makeTransaction(transactionInfo);
 
-  console.log(transactionInfo.date);  
   var newTransaction = {
     source: transaction.getSource(),
     destination: transaction.getDestination(),
@@ -60,8 +59,8 @@ async function addTransaction(transactionInfo){
     month: month
   });
 
-  if(foundWallet !== null) {
-    addTransactionToWallet(newTransaction, foundWallet, splittedDate[2]);
+  if(foundWallet.length !== 0) {
+    addTransactionToWallet(newTransaction, foundWallet[0], splittedDate[2]);
   } else {
     console.log("wallet not found!, creating new wallet!");
     let previousMonthWallet = await walletAccess.findWalletBy({
@@ -71,7 +70,7 @@ async function addTransaction(transactionInfo){
     });
 
     // previousMonthWallet.data[previousMonthWallet.data.length - 1]
-    let previousMonthTotal = previousMonthWallet !== null ? previousMonthWallet.totalAmount : 0;
+    let previousMonthTotal = previousMonthWallet.length !== 0 ? previousMonthWallet[0].totalAmount : 0;
 
     let newWallet = await walletAccess.addWallet({
       branchCode: newTransaction.branchCode,
@@ -80,7 +79,7 @@ async function addTransaction(transactionInfo){
       data: [previousMonthTotal],
       totalAmount: previousMonthTotal
     });
-    
+
     addTransactionToWallet(newTransaction, newWallet, splittedDate[2]);
   }
 

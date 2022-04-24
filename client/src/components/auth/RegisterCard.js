@@ -49,6 +49,7 @@ export default function RegisterCard() {
         setBranches(response.data.branches);
       }
 
+
     })();
   }, [branches.length]);  
 
