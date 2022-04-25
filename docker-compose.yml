@@ -1,0 +1,46 @@
+services:
+  client:
+    container_name: chc-app-client
+    image: chc-app-client:0.1.0
+    build:
+      context: client
+      dockerfile: Dockerfile
+    command: node server.js
+    restart: unless-stopped
+    networks:
+      - shared-network
+
+
+  api:
+    container_name: chc-app-api
+    image: chc-app-api:0.1.0
+    build:
+      context: server
+      dockerfile: Dockerfile
+    command: node server.js
+    restart: unless-stopped
+    networks:
+      - shared-network
+    healthcheck:
+      test: ["CMD", "curl", "http://api:5555"]
+      interval: 5s
+      timeout: 3s
+      retries: 6
+
+  nginx:
+    depends_on:
+      - api
+      - client
+    restart: always
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - 4000:80
+      - 4001:4001
+    networks:
+      - shared-network
+
+
+networks:
+  shared-network:
