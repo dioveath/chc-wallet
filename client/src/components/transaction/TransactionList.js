@@ -14,6 +14,7 @@ import {
   Button,
   HStack,
   Box,
+  Flex,
   useColorModeValue,
   useToast  
 } from '@chakra-ui/react';
@@ -23,8 +24,8 @@ import axios from 'axios';
 import useAuth from '../../hooks/Auth.js';
 import config from '../../config/config.js';
 import { TransactionService } from '../../Service/TransactionService.js';
-
-
+import { AiFillInfoCircle } from 'react-icons/ai';
+import { Link as RouterLink } from 'react-router-dom';
 
 export default function TransactionList(props){
 
@@ -100,38 +101,45 @@ export default function TransactionList(props){
                       "right": 0
                     }}>
 
-                      <AiFillDelete
-                        _hover={{ color: "red" }}
-                        cursor="pointer"
-                        onClick={ async () => {
-                          const { transaction, error } = await TransactionService.deleteTransaction(t.id, user.accessToken);
+                      <Flex
+                      justify="space-around">
+                        <AiFillDelete
+                          _hover={{ color: "red" }}
+                          cursor="pointer"
+                          onClick={ async () => {
+                            const { transaction, error } = await TransactionService.deleteTransaction(t.id, user.accessToken);
 
-                          if(error != undefined && error != null) {
-                            error.forEach((e) => {
+                            if(error != undefined && error != null) {
+                              error.forEach((e) => {
+                                toast({
+                                  title: 'Transaction Add Failed',
+                                  description: e,
+                                  status: 'error',
+                                  duration: 3000,
+                                  isClosable: true
+                                });                
+                              });
+                            } else {
                               toast({
-                                title: 'Transaction Add Failed',
-                                description: e,
-                                status: 'error',
+                                title: 'Transaction Deleted Successfully',
+                                description: `Transaction ID: ${transaction.deleted.id}`,
+                                status: 'info',
                                 duration: 3000,
                                 isClosable: true
-                              });                
-                            });
-                          } else {
-                            toast({
-                              title: 'Transaction Deleted Successfully',
-                              description: `Transaction ID: ${transaction.deleted.id}`,
-                              status: 'info',
-                              duration: 3000,
-                              isClosable: true
-                            });
+                              });
 
-                            props.setTransactions([
-                              ...props.transactions.filter((t) => t.id !== transaction.deleted.id)
-                            ]);
+                              props.setTransactions([
+                                ...props.transactions.filter((t) => t.id !== transaction.deleted.id)
+                              ]);
 
-                          }                          
+                            }                          
 
-                        }}/>
+                          }}/>
+
+                        <RouterLink to={"transaction/" + t.id}>
+                          <AiFillInfoCircle />
+                        </RouterLink>
+                      </Flex>
 
                     </Td>
 

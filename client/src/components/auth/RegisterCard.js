@@ -87,73 +87,76 @@ export default function RegisterCard() {
           bg={useColorModeValue('white', 'gray.700')}
           boxShadow={'lg'}
           p={8}>
-          <Stack spacing={4}>
-            <Box>
-              <FormControl id="fullName" isRequired>
-                <FormLabel>Full Name</FormLabel>
-                <Input type="text" ref={fullName}/>
+          <form onSubmit={handleSubmit}>
+            <Stack spacing={4}>
+              <Box>
+                <FormControl id="fullName" isRequired>
+                  <FormLabel>Full Name</FormLabel>
+                  <Input type="text" ref={fullName}/>
+                </FormControl>
+              </Box>
+              <FormControl id="email" isRequired>
+                <FormLabel>Email address</FormLabel>
+                <Input type="email" ref={email}/>
               </FormControl>
-            </Box>
-            <FormControl id="email" isRequired>
-              <FormLabel>Email address</FormLabel>
-              <Input type="email" ref={email}/>
-            </FormControl>
-            <FormControl id="number" isRequired>
-              <FormLabel> Phone Number </FormLabel>
-              <Input type="number" ref={phoneNumber}/>
-            </FormControl>
-            
-            <FormControl id="branchId" isRequired>
-              <FormLabel> Branch </FormLabel>
-              <Select ref={branch}>
-                {
-                  branches.map((b) => <option value={b.id} key={b.id}> {b.name} </option>)
-                }
-              </Select>                          
-            </FormControl>
+              <FormControl id="number" isRequired>
+                <FormLabel> Phone Number </FormLabel>
+                <Input type="number" ref={phoneNumber}/>
+              </FormControl>
+              
+              <FormControl id="branchId" isRequired>
+                <FormLabel> Branch </FormLabel>
+                <Select ref={branch}>
+                  {
+                    branches.map((b) => <option value={b.id} key={b.id}> {b.name} </option>)
+                  }
+                </Select>                          
+              </FormControl>
 
-            <FormControl id="password" isRequired>
-              <FormLabel>Password</FormLabel>
-              <InputGroup>
-                <Input type={showPassword ? 'text' : 'password'} ref={password}/>
-                <InputRightElement h={'full'}>
-                  <Button
-                    variant={'ghost'}
-                    onClick={() =>
-                      setShowPassword((showPassword) => !showPassword)
-                    }>
-                    {showPassword ? <ViewIcon /> : <ViewOffIcon />}
-                  </Button>
-                </InputRightElement>
-              </InputGroup>
-            </FormControl>
-            {registerError.length !== 0 ?
+              <FormControl id="password" isRequired>
+                <FormLabel>Password</FormLabel>
+                <InputGroup>
+                  <Input type={showPassword ? 'text' : 'password'} ref={password}/>
+                  <InputRightElement h={'full'}>
+                    <Button
+                      variant={'ghost'}
+                      onClick={() =>
+                        setShowPassword((showPassword) => !showPassword)
+                      }>
+                      {showPassword ? <ViewIcon /> : <ViewOffIcon />}
+                    </Button>
+                  </InputRightElement>
+                </InputGroup>
+              </FormControl>
+              {registerError.length !== 0 ?
                <Box>
                  {registerError.map((err) => <Text key={err} color='red.500' fontSize='0.8rem'> {err } </Text>)}
                </Box>
                : <Box></Box>
               }            
-            <Stack spacing={10} pt={2}>
-              <Button
-                loadingText="Submitting"
-                size="lg"
-                bg={'blue.400'}
-                color={'white'}
-                _hover={{
-                  bg: 'blue.500',
-                }}
-                onClick={handleSubmit}
-                isLoading={loading}>
-                Register
-              </Button>
+              <Stack spacing={10} pt={2}>
+                <Button
+                  loadingText="Submitting"
+                  size="lg"
+                  bg={'blue.400'}
+                  color={'white'}
+                  _hover={{
+                    bg: 'blue.500',
+                  }}
+                  type='submit'
+                  onClick={handleSubmit}
+                  isLoading={loading}>
+                  Register
+                </Button>
+              </Stack>
+              <Flex pt={6} justify="center">
+                <Text align={'center'} pr={1}>
+                  Already a user? 
+                </Text>
+                <RouterLink to="/login"> <Text color="blue.400"> Login </Text> </RouterLink> 
+              </Flex>
             </Stack>
-            <Stack pt={6}>
-              <Text align={'center'}>
-                Already a user? 
-                <RouterLink to="/login"> Login </RouterLink> 
-              </Text>
-            </Stack>
-          </Stack>
+          </form>    
         </Box>
       </Stack>
     </Flex>
