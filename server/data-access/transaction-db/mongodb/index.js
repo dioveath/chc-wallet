@@ -90,6 +90,7 @@ async function addTransaction(transactionInfo){
 }
 
 async function addTransactionToWallet(transaction, wallet, day){
+
   let isGreater = (day) > wallet.data.length;
   let len = isGreater ? (day) : wallet.data.length;
   let startIndex = !isGreater ? (day - 1) : wallet.data.length;
@@ -153,14 +154,16 @@ async function deleteTransaction(id){
     month: month
   });
 
-  if(foundWallet !== null){
+  if(foundWallet !== null || foundWallet.length !== 0){
     if(transaction.transactionType == 'Income')
       transaction.transactionType = 'Expense';
     else
       transaction.transactionType = 'Income';
 
-    addTransactionToWallet(transaction, foundWallet, splittedDate[2]);
+    addTransactionToWallet(transaction, foundWallet[0], splittedDate[2]);
   }
+
+
 
   return Transaction.findByIdAndDelete(id)
     .then(res => {
