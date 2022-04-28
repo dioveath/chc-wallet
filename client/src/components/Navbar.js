@@ -53,7 +53,7 @@ export default function Navbar () {
           <Box>
             <RouteLink to='/'>
               <Text fontSize={["1rem", "1.1rem", "1.5rem"]} fontWeight="bold">
-                Charicha Finance
+                Charicha Internal Management
               </Text>
             </RouteLink>
           </Box>
@@ -104,7 +104,8 @@ export default function Navbar () {
                     </Center>
                     <br />
                     <MenuDivider />
-                    <MenuItem onClick={() => { navigate('/finance'); }}>Your Servers</MenuItem>
+                    <MenuItem onClick={() => { navigate('/finance'); }}>Manage Finance</MenuItem>
+                    <MenuItem onClick={() => { navigate('/operation'); }}>Manage Operation</MenuItem>
                     <MenuItem>Account Settings</MenuItem>
                     <MenuItem onClick={logout}>Logout</MenuItem>
                   </MenuList>

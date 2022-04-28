@@ -6,6 +6,8 @@ import FinanceLayoutPage from './pages/finance/index.js';
 import LoginPage from './pages/login/index.js';
 import RegisterPage from './pages/register/index.js';
 import TransactionPage from './pages/transaction/index.js';
+import OperationLayoutPage from './pages/operation/index.js';
+import OperationPage from './pages/operation/OperationPage.js';
 
 import config from './config/config.js';
 import Fonts from './config/fonts.js';
@@ -91,6 +93,10 @@ function App() {
           <Route path='finance' element={<FinanceLayoutPage/>}>
             <Route index element={<FinancePage/>}/>
             <Route path='transaction/:id' element={<TransactionPage/>}/>
+          </Route>
+
+          <Route path='operation' element={<OperationLayoutPage/>}>
+            <Route path='chcGam' element={<OperationPage/>}/>
           </Route>
 
         </Routes>

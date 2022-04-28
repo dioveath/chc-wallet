@@ -1,6 +1,5 @@
 const Joi = require('joi');
 
-
 function validator(schema){
   return (payload) => {
 
