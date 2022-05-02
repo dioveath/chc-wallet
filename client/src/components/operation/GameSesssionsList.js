@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useContext } from 'react';
 
 import {
   Text,
@@ -27,13 +27,15 @@ import config from '../../config/config.js';
 import { AiFillInfoCircle } from 'react-icons/ai';
 import { Link as RouterLink } from 'react-router-dom';
 import { GridLoader } from 'react-spinners';
+import useGameSessions from '../../hooks/GameSession.js';
+
 
 export default function GameSessionList(props){
 
   const { user, userData } = useAuth();
   const toast = useToast();
 
-  const [ loading, setLoading ] = useState(true);
+  const { isLoading, gameSessions, setGameSessions } = useGameSessions();
 
   const columns = useMemo(() => [
     'ID',
@@ -45,42 +47,14 @@ export default function GameSessionList(props){
     'Paid'
   ], []);
 
-  const onDeleteHandler = async () => {
-    // const { gameSession, error } = await GameSessionService.deleteGameSession(t.id, user.accessToken);
-
-    // if(error != undefined && error != null) {
-    //   error.forEach((e) => {
-    //     toast({
-    //       title: 'GameSession Add Failed',
-    //       description: e,
-    //       status: 'error',
-    //       duration: 3000,
-    //       isClosable: true
-    //     });                
-    //   });
-    // } else {
-    //   toast({
-    //     title: 'GameSession Deleted Successfully',
-    //     description: `GameSession ID: ${gameSession.deleted.id}`,
-    //     status: 'info',
-    //     duration: 3000,
-    //     isClosable: true
-    //   });
-
-    //   props.setGameSessions([
-    //     ...props.gameSessions.filter((t) => t.id !== gameSession.deleted.id)
-    //   ]);
-
-    // }                          
-
-  };
+  const onDeleteHandler = async () => {};
 
   const bgColor = useColorModeValue('#FFFFFF', '#1A202C');
   const fgColor = useColorModeValue('darkviolet', 'darkviolet');
 
   return (
     <>
-      { loading ?
+      { isLoading ?
         <Flex height="70vh" justify="center" alignItems="center">
           <GridLoader color={fgColor}></GridLoader>
         </Flex>
@@ -89,8 +63,8 @@ export default function GameSessionList(props){
               <Table>
                 <Thead>
                   <Tr>
-                    { columns.map((h) => <Th key={h} {...(h === "Cost" ? {isNumeric: ''} : {})}> { h }</Th>)}
-
+                    { columns.map((h, i) =>
+                      <Th key={h}> { h }</Th>)}
                     <Th bg={bgColor} style={{
                       "position": "sticky",
                       "top": 0,
@@ -101,7 +75,7 @@ export default function GameSessionList(props){
                 </Thead>
                 <Tbody>
                   {
-                    props.sessions.map((s) => {
+                    gameSessions.map((s) => {
                       return (
                         <Tr key={s.id}>
                           <Td> {s.id.substring(0, 6)}... </Td>
@@ -137,7 +111,7 @@ export default function GameSessionList(props){
                 </Tbody>
                 <Tfoot>
                   <Tr>
-                    { columns.map((h) => <Th key={h.Header}> { h.Header }</Th>)}
+                    { columns.map((h) => <Th key={h}> { h }</Th>)}
                     <Th bg={bgColor} style={{
                       "position": "sticky",
                       "top": 0,
@@ -153,12 +127,12 @@ export default function GameSessionList(props){
             </TableContainer>
             <Box height="0.5rem"></Box>
             <HStack spacing='1rem'>
-              {
-                Array.from({length: props.pagination.totalPages}, (_,i) => i+1).map((i) =>
-                  <Button variant={props.page == i ? 'solid' : 'outline'} colorScheme='teal' key={i} onClick={() => { props.setPage(i); }}>
-                    { i }
-                  </Button>)
-              }    
+              {/* { */}
+              {/*   Array.from({length: props.pagination.totalPages}, (_,i) => i+1).map((i) => */}
+              {/*     <Button variant={props.page == i ? 'solid' : 'outline'} colorScheme='teal' key={i} onClick={() => { props.setPage(i); }}> */}
+              {/*       { i } */}
+              {/*     </Button>) */}
+              {/* }     */}
             </HStack>
             <Box height="0.5rem"></Box>
           </>
