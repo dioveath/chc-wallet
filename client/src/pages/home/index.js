@@ -12,6 +12,7 @@ import config from '../../config/config.js';
 import useAuth from '../../hooks/Auth.js';
 
 import { useMediaQuery } from 'react-responsive';
+import { getNumberOfDays } from '../../utils/DateUtils.js';
 
 export const options = {
   responsive: true,
@@ -23,7 +24,12 @@ export const options = {
   plugins: {
     title: {
       display: true,
-      text: 'Wallet of Charicha',
+      text: 'Charicha Finance Overview',
+      font: {
+        size: '26px',
+        color: 'white',
+        weight: '600'
+      }
     },
     autocolors: false,
     annotation: {
@@ -60,13 +66,6 @@ export const options = {
       },
       ticks: {
         callback: (value, index, ticks) => {
-          // console.log(value);
-          // let newStr = ""; 
-          // if(value > 1000) {
-          //   value /= 1000;
-          //   value = value.toFixed(2);
-          //   newStr += value + "K";
-          // }
           return "Rs. " + value;
         }
       }
@@ -111,7 +110,7 @@ function HomePage (){
   }
 
 
-  const { user } = useAuth();
+  const { user, userData } = useAuth();
 
   useEffect(() => {
     (async () => {
@@ -125,7 +124,7 @@ function HomePage (){
 
         const axiosDataOptions = {
           method: 'GET',
-          url: `${config.serverUrl}/api/v1/walletdata?year=${today.getFullYear()}&month=${today.getMonth()+1}`,
+          url: `${config.serverUrl}/api/v1/walletdata?year=${today.getFullYear()}`,
           headers: {
             'Content-Type': 'application/json',
             Authorization: 'Bearer ' + user.accessToken
@@ -133,7 +132,6 @@ function HomePage (){
         };
 
         let dataResponse = await axios.request(axiosDataOptions);
-
         let branchesResponse = await axios.get(`${config.serverUrl}/api/v1/branch`);
 
         let prevMonth = new Date(new Date().setDate(0));
@@ -143,7 +141,7 @@ function HomePage (){
           if(dayNum > 0){
             return dayNum + ' ' + today.toLocaleString('default', { month: 'short'});
           } else {
-            return prevMonth.getDate() - (9 - i) + ' ' + prevMonth.toLocaleString('default', { month: 'short'});
+            return prevMonth.getDate() - (9 - i - today.getDate()) + ' ' + prevMonth.toLocaleString('default', { month: 'short'});
           }
         });
         let newData = JSON.parse(JSON.stringify(financeData));
@@ -158,47 +156,15 @@ function HomePage (){
           let branch = branches.find(branch => branch.codeName == branchData.branchCode);
           if(branch === undefined) return;
 
-          let datasetsData = branchData.data.filter((e, i) => i >= (today.getDate() - 10));
-
-          if(today.getDate() - 10 <= 0) {
-            try {
-              const axiosDataOptions = {
-                method: 'GET',
-                url: `${config.serverUrl}/api/v1/walletdata?year=${prevMonth.getFullYear()}&month=${prevMonth.getMonth()+1}`,
-                headers: {
-                  'Content-Type': 'application/json',
-                  Authorization: 'Bearer ' + user.accessToken
-                }
-              };
-
-              let prevMonthDataResponse = await axios.request(axiosDataOptions);
-              let noOfDaysInPrevMonth = prevMonth.getDate();
-              let prevMonthDatasets = [];
-              let noOfDatasNeedToFullFill = (10 - datasetsData.length);
-
-              if(prevMonthDataResponse.data.wallets.length != 0) {
-                let prevMonthWalletData = prevMonthDataResponse.data.wallets[0];
-                prevMonthDatasets = prevMonthWalletData.data.filter((_, i) => i >= (noOfDaysInPrevMonth - noOfDatasNeedToFullFill) + 1);
-              } else {
-                // prevMonthDatasets
-                prevMonthDatasets = Array.from({length: noOfDatasNeedToFullFill}, (_, i) => 0);
-              }
-
-              datasetsData = prevMonthDatasets.concat(datasetsData);
-            } catch (e){
-              console.log(e.message);
-            }
-          } else if(datasetsData.length <= 10){
-            let noOfDatasNeedToFullFill = (10 - datasetsData.length);
-            let fillArray = Array.from({length: noOfDatasNeedToFullFill}, (_, i) => branchData.totalAmount);
-            datasetsData = datasetsData.concat(fillArray);
-          }
+          let datasetsData = branchData.data.filter((e, i) => 
+            i >= (getNumberOfDays(today.getYear(), today.getMonth()) +  today.getDate() - 10)
+              && i <= (getNumberOfDays(today.getYear(), today.getMonth()) +  today.getDate() - 1));
 
           newData.datasets.push({
             label: branch.name,
             data: datasetsData,
             borderColor: branch.borderColor,
-            backgroundColor: branch.borderColor + Math.round(0.6 * 255).toString(16),
+            backgroundColor: branch.borderColor + Math.round(0.2 * 255).toString(16),
             yAxisID: 'y',
             fill: 'start',
             tension: 0.4
@@ -206,20 +172,27 @@ function HomePage (){
         });
 
         newOptions.plugins.annotation.annotations = [];
+
         branches.forEach((branch) => {
           let rentAnnotation = {
             type: 'line',
-            borderColor: branch.borderColor,
+            borderColor: branch.borderColor + Math.round(0.9 * 255).toString(16),
             backgroundColor: branch.backgroundColor,
             borderWidth: 2,
             click: function({chart, element}) {
               // console.log(chart, element);
             },
             label: {
-              backgroundColor: branch.backgroundColor,
-              content: 'Monthly Bill for ' + branch.name,
+              font: {
+                size: '16px',
+                weight: '500'
+              },
+              backgroundColor: branch.borderColor + Math.round(0.5 * 255).toString(16),
+              color: 'white',
+              content: branch.name + ' Bills',
               position: 'start',
               enabled: true,
+              padding: 10
             },
             scaleID: 'y',
             value: parseInt(branch.roomRent) + parseInt(branch.internetBill) + parseInt(branch.waterBill)
@@ -242,12 +215,10 @@ function HomePage (){
     <>
       <Navbar/>
       <Flex flexDirection="column" justifyContent="center" alignItems="center">
-        <Box height="2rem"></Box>
-        <Text fontSize={['1.2rem', '1.4rem', '1.8rem']}
-              fontWeight='bold'>
-          Welcome to Charicha Dashboard Overview
-        </Text>
-        <Box height="2rem"></Box>        
+        {/* <Text fontSize={['1.2rem', '1.4rem', '1.8rem']} */}
+        {/*       fontWeight='bold'> */}
+        {/*   Welcome to Charicha! */}
+        {/* </Text> */}
         {
           user == null ?
             <Box backgroundColor="red.500" p="0.5rem 3rem" borderRadius="5px">

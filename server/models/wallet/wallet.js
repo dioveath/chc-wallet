@@ -2,7 +2,6 @@ var buildMakeTransaction = function(transactionValidator){
   return async ({
     branchCode,
     year,
-    month,
     data,
     totalAmount
   } = {}) => {
@@ -10,7 +9,6 @@ var buildMakeTransaction = function(transactionValidator){
     var error = transactionValidator({
       branchCode,
       year,
-      month,
       data,
       totalAmount
     });
@@ -20,7 +18,6 @@ var buildMakeTransaction = function(transactionValidator){
     return Object.freeze({
       getBranchCode: () => branchCode,
       getYear: () => year,
-      getMonth: () => month,
       getData: () => data,
       getTotalAmount: () => totalAmount
     });

@@ -1,9 +1,8 @@
 const { dropUsers, listUsers } = require('../data-access/user-db/mongodb/index.js');
-const { dropTransactions, listTransactions } = require('../data-access/transaction-db/mongodb/index.js');
+const { addTransaction, dropTransactions, listTransactions } = require('../data-access/transaction-db/mongodb/index.js');
 const { dropWallets, listWallets } = require('../data-access/wallet-db/mongodb/index.js');
 const { dropBranches, listBranches } = require('../data-access/branch-db/mongodb/index.js');
 const { Command } = require('commander');
-
 
 
 // FIXME: program is used on every command. so only last will be set as actual command
@@ -55,13 +54,27 @@ program.name('wallet')
   .description('Handles all Wallets')
   .option('-ls, --list')
   .option('-da, --drop-all')
+  .option('-rs, --resync')
   .action(async (options) => {
     if(options.list) {
-      console.table((await listWallets({})));
+      console.table((await listTransactions({})));
       console.log("All Wallets listed!");
     } else if(options.dropAll){
       console.log(await dropWallets());
       console.log("Dropped all Wallets!");
+    } else if(options.resync){
+      console.log('DANGER: TO USE UNCOMMENT FROM SOURCE CODE...!');
+      // await dropWallets();
+      // const transactions = (await listTransactions({}));
+      // transactions.sort((a, b) => a.date - b.date);
+      // for(let i = 0; i < transactions.length; i++){
+      //   let { date, ...other } = transactions[i];
+      //   console.log(await addTransaction({
+      //     date: date.toISOString().substring(0, 10),
+      //     ...other
+      //   }));
+      // }
+
     } else {
       console.log("You can use help here!");
     }

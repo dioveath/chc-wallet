@@ -1,3 +1,5 @@
+
+
 // uses mongoose implementation of findUser, listUsers, dropAll, etc.
 // Gateway  -- Implementation
 // Data-Access and Use-Cases as well
@@ -55,64 +57,64 @@ async function addTransaction(transactionInfo){
   let month = splittedDate[1];
   let foundWallet = await walletAccess.findWalletBy({
     branchCode: newTransaction.branchCode,
-    year: year,
-    month: month
+    year: year
   });
 
+
   if(foundWallet.length !== 0) {
-    addTransactionToWallet(newTransaction, foundWallet[0], splittedDate[2]);
+    await addTransactionToWallet(newTransaction, foundWallet[0], month, splittedDate[2]);
   } else {
-    console.log("wallet not found!, creating new wallet!");
-    let previousMonthWallet = await walletAccess.findWalletBy({
-      branchCode: newTransaction.branchCode,
-      year: month == 1 ? year - 1 : year,
-      month: month == 1 ? 12 : month
-    });
-
-    // previousMonthWallet.data[previousMonthWallet.data.length - 1]
-    let previousMonthTotal = previousMonthWallet.length !== 0 ? previousMonthWallet[0].totalAmount : 0;
-
+    console.log("wallet not found!, creating new year wallet!");
     let newWallet = await walletAccess.addWallet({
       branchCode: newTransaction.branchCode,
       year: year,
-      month: month,
-      data: [previousMonthTotal],
-      totalAmount: previousMonthTotal
+      data: Array.from({length: getNumberOfDays(year, 12)}, (_, __) => 0),
+      totalAmount: 0
     });
 
-    console.log(newWallet);
-
-    addTransactionToWallet(newTransaction, newWallet, splittedDate[2]);
+    await addTransactionToWallet(newTransaction, newWallet, month, splittedDate[2]);
   }
-
 
   return Transaction.create(newTransaction).then(serialize).catch(errorFormatter);
 }
 
-async function addTransactionToWallet(transaction, wallet, day){
 
-  let isGreater = (day) > wallet.data.length;
-  let len = isGreater ? (day) : wallet.data.length;
-  let startIndex = !isGreater ? (day - 1) : wallet.data.length;
 
-  for(let i = startIndex; i < len; i++){
-    if(isGreater) {
-      if(i == parseInt(day - 1)) {
-        if(transaction.transactionType == "Income") {
-          wallet.data.push((wallet.data[startIndex] ?? 0) + parseInt(transaction.amount));
-        }
-        else
-          wallet.data.push((wallet.data[startIndex] ?? 0) - parseInt(transaction.amount));            
-      }
-      else
-        wallet.data.push(wallet.data[startIndex] ?? 0);
-    }
-    else {
+function daysInMonth(year, month){
+  return new Date(year, month, 0).getDate();
+}
+
+function getNumberOfDays(year, month) {
+  if(month == 0) return 0;
+  if(month > 12) return 365;
+  let days = 0;
+  for(let i = 0; i < month; i++){
+    days += daysInMonth(year, i+1);
+  }
+  return days;
+}
+
+function getMonthFromNumDays(year, days){
+  if(days == 0) return 1;
+  if(days > 365) return 12;
+  let checkDays
+  for(let i = 0; i < 366; i++){
+    checkDays += daysInMonth(year, i+1);
+    if(checkDays > days) return i;
+  }
+  return 12;
+}
+
+
+
+async function addTransactionToWallet(transaction, wallet, month, day){
+  let startIndex = getNumberOfDays(wallet.year, month-1) + parseInt(day) - 1;
+
+  for(let i = startIndex; i < getNumberOfDays(wallet.year, new Date().getMonth() + 1); i++){
       if(transaction.transactionType == "Income")
         wallet.data[i] += parseInt(transaction.amount);
       else
         wallet.data[i] -= parseInt(transaction.amount);          
-    }
   }
 
   if(transaction.transactionType == "Income") {
@@ -121,9 +123,8 @@ async function addTransactionToWallet(transaction, wallet, day){
     wallet.totalAmount -= parseInt(transaction.amount);    
   }
 
-  console.log(wallet);
   let updatedWallet = await walletAccess.updateWallet(wallet.id, wallet);
-  console.log("wallet updated!");  
+  console.log("wallet updated, with " + transaction.amount + " " + transaction.transactionType);  
 }
 
 
@@ -142,7 +143,6 @@ async function updateTransaction(id, updateTransactionInfo){
 
 
 async function deleteTransaction(id){
-
   let transaction = await findTransactionById(id);
   if(transaction == null) throw ["Transaction not found with id" + id];
   let splittedDate = transaction.date.toISOString().substring(10, 0).split('-');
@@ -150,20 +150,18 @@ async function deleteTransaction(id){
   let month = splittedDate[1];  
   let foundWallet = await walletAccess.findWalletBy({
     branchCode: transaction.branchCode,
-    year: year,
-    month: month
+    year: year
   });
 
+  console.log(foundWallet);
   if(foundWallet !== null || foundWallet.length !== 0){
     if(transaction.transactionType == 'Income')
       transaction.transactionType = 'Expense';
     else
       transaction.transactionType = 'Income';
 
-    addTransactionToWallet(transaction, foundWallet[0], splittedDate[2]);
+    addTransactionToWallet(transaction, foundWallet[0], month, splittedDate[2]);
   }
-
-
 
   return Transaction.findByIdAndDelete(id)
     .then(res => {

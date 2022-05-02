@@ -8,6 +8,7 @@ import RegisterPage from './pages/register/index.js';
 import TransactionPage from './pages/transaction/index.js';
 import OperationLayoutPage from './pages/operation/index.js';
 import OperationPage from './pages/operation/OperationPage.js';
+import ListOperation from './pages/operation/ListOperation.js';
 
 import config from './config/config.js';
 import Fonts from './config/fonts.js';
@@ -96,6 +97,7 @@ function App() {
           </Route>
 
           <Route path='operation' element={<OperationLayoutPage/>}>
+            <Route index element={<ListOperation/>}></Route>
             <Route path='chcGam' element={<OperationPage/>}/>
           </Route>
 

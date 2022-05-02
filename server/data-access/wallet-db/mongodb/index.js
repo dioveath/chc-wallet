@@ -22,13 +22,11 @@ function findWalletById(id){
 
 async function addWallet(walletInfo){
   // defaults
-  console.log(walletInfo);
   var wallet = await makeWallet(walletInfo);
 
   var newWallet = {
     branchCode: wallet.getBranchCode(),
     year: wallet.getYear(),
-    month: wallet.getMonth(),
     data: wallet.getData(),
     totalAmount: wallet.getTotalAmount()
   };

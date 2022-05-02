@@ -4,6 +4,11 @@ import config from '../config/config.js';
 
 const WalletService = {
 
-  // getWallet
+  getBranchWallets: (year, month) => {
+    
+  },
+
+  getWallet: (branchCode, year, month) => {
+  }
 
 };
