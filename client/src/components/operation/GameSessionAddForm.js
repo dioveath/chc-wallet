@@ -52,6 +52,21 @@ export default function GameSessionAddForm(props) {
     "PC Gaming"
   ];
 
+
+  const timePickerCss = '/custom-rc-time-picker-' + useColorModeValue('light', 'dark') + '.css';
+  useEffect(() => {
+    var head = document.head;
+    var link = document.createElement("link");
+
+    link.type = "text/css";
+    link.rel = "stylesheet";
+    link.href = timePickerCss;
+
+    head.appendChild(link);
+    return () => { head.removeChild(link); };
+
+  }, [timePickerCss]);  
+
   const onAddHandler = async (e) => {
     
     let startTimeStr = startTime.current.picker.value;
@@ -137,7 +152,7 @@ export default function GameSessionAddForm(props) {
 
         </Wrap>
 
-        <Wrap justify={['center', 'flex-start']} align='bottom'>
+        <Wrap justify={['center', 'space-between']} align='bottom'>
 
           <WrapItem width={["300px", "300px"]}>
             <FormControl>
@@ -153,7 +168,10 @@ export default function GameSessionAddForm(props) {
           <WrapItem width={["300px", "300px"]}>
             <FormControl>
               <FormLabel htmlFor='sessionStartTime'> Session StartTime </FormLabel>
-              <TimePicker use12Hours={true} ref={startTime} onChange={(e) => console.log(e._i)}/>
+              <TimePicker
+                use12Hours={true}
+                ref={startTime}
+                onChange={(e) => console.log(e._i)}/>
             </FormControl>
           </WrapItem>
 

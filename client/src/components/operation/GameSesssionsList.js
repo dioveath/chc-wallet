@@ -90,8 +90,8 @@ export default function GameSessionList(props){
                           <Td> {s.inCharge?.substring(0,6)}... </Td>
                           <Td> {s.startTime} </Td>
                           <Td> {s.duration} </Td>
-                          <Td> {<FaCashRegister color={s.paid ? "green" : "grey"} size="20px"/>}</Td>
                           <Td> {s.cost} </Td>                                        
+                          <Td> {<FaCashRegister color={s.paid ? "green" : "grey"} size="20px"/>}</Td>
 
                           <Td bg={bgColor} style={{
                             "position": "sticky",
