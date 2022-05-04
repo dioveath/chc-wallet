@@ -97,7 +97,7 @@ export default function GameSessionAddForm(props) {
     if(error !== undefined){
       error.forEach((e) => {
         toast({
-          title: 'Game Session Add Failed',
+          title: 'Game Session Start Failed',
           description: e,
           status: 'error',
           duration: 3000,
@@ -105,9 +105,13 @@ export default function GameSessionAddForm(props) {
         });                
       });      
     } else {
+
+      const descText = `${gameSession.player.toUpperCase()} started playing ${gameSession.game.toUpperCase()} in 
+${gameSession.platform.toUpperCase()} for ${gameSession.duration} Hour`;
+
       toast({
-        title: 'Transaction Added Successfully',
-        description: `Transaction ID: ${gameSession.id}`,
+        title: 'Game Session Started',
+        description: descText,
         status: 'success',
         duration: 3000,
         isClosable: true

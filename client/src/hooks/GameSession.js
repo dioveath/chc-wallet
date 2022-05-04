@@ -15,7 +15,6 @@ export function GameSessionContextProvider(props){
   const [gameSessions, setGameSessions] = useState([]);
   const [isLoading, setLoading] = useState(true);
 
-
   useEffect(() => {
     setLoading(true);
     (async() =>{
@@ -55,9 +54,20 @@ export function GameSessionContextProvider(props){
   };
 
   const updateSession = async (id, newProps) => {
-    
+    if(user == null) throw "You must log in first!";
+    const { updatedGameSession, error } = await GameSessionService.updateGameSession(id, newProps, user.accessToken);
+
+    if(updatedGameSession !== undefined) {
+      for(let i = 0; i < gameSessions.length; i++){
+        if(gameSessions[i].id != updatedGameSession.id) continue;
+        gameSessions[i] = updatedGameSession;
+      }
+      setGameSessions([...gameSessions]);
+    }
+
+    return { updatedGameSession, error };    
   };
 
-  const contextValue = {gameSessions, setGameSessions, isLoading, deleteSession, addSession};
+  const contextValue = {gameSessions, setGameSessions, isLoading, deleteSession, addSession, updateSession};
   return <gameSessionContext.Provider value={contextValue} {...props}/>;
 }

@@ -54,6 +54,37 @@ const GameSessionService = {
         error: e.response.data.errorList
       };
     }    
+  },
+
+  updateGameSession: async(id, props, accessToken) => {
+    try {
+      const options = {
+        method: 'POST',
+        url: `${config.serverUrl}/api/v1/game-session/${id}`,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + accessToken
+        },
+        data: {
+          ...props
+        }
+      };
+
+      let response = await axios.request(options);
+      return {
+        updatedGameSession: response.data.updatedGameSession
+      };
+
+      return {
+        
+      };
+
+    } catch (error){
+      console.log(error);
+      return {
+        error: error.response.data.errorList
+      };
+    }    
   }
 
   
