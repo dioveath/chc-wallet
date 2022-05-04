@@ -24,73 +24,89 @@ import axios from 'axios';
 import config from '../../config/config.js';
 import useAuth from '../../hooks/Auth.js';
 import { TransactionService } from '../../Service/TransactionService.js';
+import useGameSessions from '../../hooks/GameSession.js';
+
+import TimePicker from 'rc-time-picker';
+import 'rc-time-picker/assets/index.css';
 
 export default function GameSessionAddForm(props) {
   const toast = useToast();
+
   const player = useRef();
   const platform = useRef();
+  const game = useRef();
   const startTime = useRef();
-  const amount = useRef();
-
-  const TransactionType = [
-    "Income",
-    "Expense"
-  ];
-
-  const [ transactionType, setTransactionType ] = useState(TransactionType[0]);
-  const handleTransactionChange = (e) => setTransactionType(e.target.value);
-
-  const Categories = [
-    "Water Bill",
-    "Electricity Bill",
-    "Internet Bill",
-    "Room Rent",
-    "Operating",
-    "Service",
-    "Assets",
-    "Food",
-    "Other"
-  ];
-
-  const category = useRef();
-  const dateTime = useRef();
+  const duration = useRef();
 
   const { user, userData } = useAuth();
-  const [ branch, setBranch ] = useState({id: 0});
+  const { addSession } = useGameSessions();
 
+  const Durations = [
+    "1 Hour",
+    "2 Hour",
+    "3 Hour"
+  ];
 
-  useEffect(() => {
-    if(userData.id == 0) return;
+  const Platform = [
+    "PS4 Couch",
+    "PC Gaming"
+  ];
 
-    (async () => {
+  const onAddHandler = async (e) => {
+    
+    let startTimeStr = startTime.current.picker.value;
+    let splittedTime = startTimeStr.split(':');
 
-      const options = {
-        method: 'GET',
-        url: `${config.serverUrl}/api/v1/branch/${userData.branchId}`,
-        headers: {
-          'Content-Type': 'application/json',
-        }
-      };
+    let hour = Durations.findIndex((e) => e === duration.current.value) + 1;
+    let startHour = parseInt(splittedTime[0]);
 
-      try {
-        let response = await axios.request(options);
-        if(response.data.status === 'success') {
-          setBranch(response.data.branch);
-        } else {
-          console.log(response.data);
-        }
-      } catch(e){
-        console.log(e.message);
-      }
+    splittedTime[0] = '' + (startHour + hour) > 12 ? ((startHour + hour) % 12) : (startHour + hour);
+    let endTimeStr = splittedTime.join(':');
 
+    let rate = platform.current.value === "PS4 Couch" ? 100 : 50;
+    let cost = hour * rate;
 
-    })();
-  }, [branch.id, userData.id]);
+    const newSession = {
+      player: player.current.value,
+      platform: platform.current.value,
+      inCharge: user.userId,
+      game: game.current.value,
+      startTime: startTimeStr,
+      duration: hour,
+      cost: cost,
+      paid: false,
+    };
+
+    const { gameSession, error } = await addSession(newSession);
+
+    if(error !== undefined){
+      error.forEach((e) => {
+        toast({
+          title: 'Game Session Add Failed',
+          description: e,
+          status: 'error',
+          duration: 3000,
+          isClosable: true
+        });                
+      });      
+    } else {
+      toast({
+        title: 'Transaction Added Successfully',
+        description: `Transaction ID: ${gameSession.id}`,
+        status: 'success',
+        duration: 3000,
+        isClosable: true
+      });      
+    }
+
+  };
 
   return (
     <>
+      <Text
+        fontSize="24px"
+        fontWeight="bold" mb="1rem"> Add Game Session </Text>
       <Stack direction={['column']} spacing='24px'>
-
         <Wrap justify={['center', 'space-between']} align="bottom">
 
           <WrapItem width={["300px", "300px"]}>
@@ -102,42 +118,10 @@ export default function GameSessionAddForm(props) {
 
           <WrapItem width={["300px", "300px"]}>
             <FormControl>
-              <FormLabel htmlFor='platform'> Transaction Platform </FormLabel>
-              <Input id='platform' type='text' ref={platform}/>
-            </FormControl>
-          </WrapItem>
-
-          <WrapItem width={["300px", "300px"]}>
-            <FormControl>
-              <FormLabel htmlFor='transactionStartTime'> Transaction StartTime </FormLabel>
-              <Input id='transactionStartTime' type='text' ref={startTime}/>
-            </FormControl>                
-          </WrapItem>
-          
-        </Wrap>
-
-        <Wrap justify={['center', 'space-between']} align='bottom'>
-          <WrapItem width={["300px", "300px"]}>
-            <FormControl>
-              <FormLabel htmlFor="amount"> Amount </FormLabel>              
-              <NumberInput>
-                <NumberInputField id="amount" placeholder='Enter amount' ref={amount}/>
-                <InputRightElement
-                  pointerEvents='none'
-                  color='gray.300'
-                  fontSize='1.2em'
-                  children='$'
-                />                          
-              </NumberInput>
-            </FormControl>
-          </WrapItem>
-
-          <WrapItem width={["300px", "300px"]}>
-            <FormControl>
-              <FormLabel htmlFor="transactionType"> Transaction Type </FormLabel>              
-              <Select value={transactionType} onChange={handleTransactionChange} id='transactionType'>
+              <FormLabel htmlFor='platform'> Session Platform </FormLabel>
+              <Select id='platform' ref={platform}>
                 {
-                  TransactionType.map((t) => <option value={t} key={t}> {t} </option>)
+                  Platform.map((t) => <option value={t} key={t}> {t} </option>)
                 }
               </Select>              
             </FormControl>
@@ -145,82 +129,41 @@ export default function GameSessionAddForm(props) {
 
           <WrapItem width={["300px", "300px"]}>
             <FormControl>
-              <FormLabel htmlFor="date"> Transaction Date</FormLabel>
-              <input name="" id='date' type="date" ref={dateTime} style={{
-                "color": useColorModeValue("black", "white"),
-                "width": "100%",
-                "padding": "0.4rem 1rem",
-                "backgroundColor": "transparent",
-                "border": "1.2px solid #66666688",
-                "borderRadius": "5px"
-              }}/>              
+              <FormLabel htmlFor='game'> Session Game </FormLabel>
+              <Input id='game' type='text' ref={game}/>
+            </FormControl>
+          </WrapItem>          
+
+
+        </Wrap>
+
+        <Wrap justify={['center', 'flex-start']} align='bottom'>
+
+          <WrapItem width={["300px", "300px"]}>
+            <FormControl>
+              <FormLabel htmlFor="duration"> Duration </FormLabel>              
+              <Select id='duration' ref={duration}>
+                {
+                  Durations.map((t) => <option value={t} key={t}> {t} </option>)
+                }
+              </Select>              
+            </FormControl>
+          </WrapItem>
+
+          <WrapItem width={["300px", "300px"]}>
+            <FormControl>
+              <FormLabel htmlFor='sessionStartTime'> Session StartTime </FormLabel>
+              <TimePicker use12Hours={true} ref={startTime} onChange={(e) => console.log(e._i)}/>
             </FormControl>
           </WrapItem>
 
         </Wrap>
 
-        <WrapItem width={["300px", "auto"]}>
-          <FormControl>
-            <FormLabel htmlFor="transactionType"> Transaction Category </FormLabel>              
-            <Select id='transactionType' ref={category}>
-              {
-                Categories.map((c) => <option value={c} key={c}> {c} </option>)
-              }
-            </Select>              
-          </FormControl>          
-        </WrapItem>
-
-        <Button bg="purple" color="white" _hover={{bg: "purple.900"}} onClick={async (e)=> {
-
-          if(branch.id == 0){
-              toast({
-                title: 'Transaction Add Failed.',
-                description: "Couldn't load the branch",
-                status: 'error',
-                duration: 3000,
-                isClosable: true
-              });
-            return;
-          }
-
-          const newTransaction = {
-            "player": player.current.value,
-            "platform": platform.current.value,
-            "startTime": startTime.current.value,
-            "amount": amount.current.value,
-            "transactionType": transactionType,
-            "date": dateTime.current.value,
-            "category": category.current.value,
-            "doneBy": user.userId,
-          };
-
-          const { transaction, error } = await TransactionService.addTrasaction(newTransaction, branch.codeName, user.accessToken);
-          if(error != undefined && error != null) {
-            error.forEach((e) => {
-              toast({
-                title: 'Transaction Add Failed',
-                description: e,
-                status: 'error',
-                duration: 3000,
-                isClosable: true
-              });                
-            });
-          } else {
-            toast({
-              title: 'Transaction Added Successfully',
-              description: `Transaction ID: ${transaction.id}`,
-              status: 'success',
-              duration: 3000,
-              isClosable: true
-            });
-
-            props.setTransactions([
-              ...props.transactions,
-              transaction
-            ]);
-          }
-
-        }}>
+        <Button
+          bg="purple"
+          color="white"
+          _hover={{bg: "purple.900"}}
+          onClick={ onAddHandler }>
           Add GameSession
         </Button>
       </Stack>      

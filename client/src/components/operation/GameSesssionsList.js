@@ -23,11 +23,14 @@ import { AiFillDelete } from 'react-icons/ai';
 import axios from 'axios';
 import useAuth from '../../hooks/Auth.js';
 import config from '../../config/config.js';
-// import { GameSessionService } from '../../Service/GameSessionService.js';
+
 import { AiFillInfoCircle } from 'react-icons/ai';
 import { Link as RouterLink } from 'react-router-dom';
 import { GridLoader } from 'react-spinners';
 import useGameSessions from '../../hooks/GameSession.js';
+
+import { FaCashRegister } from 'react-icons/fa';
+
 
 
 export default function GameSessionList(props){
@@ -35,7 +38,7 @@ export default function GameSessionList(props){
   const { user, userData } = useAuth();
   const toast = useToast();
 
-  const { isLoading, gameSessions, setGameSessions } = useGameSessions();
+  const { isLoading, gameSessions, deleteSession } = useGameSessions();
 
   const columns = useMemo(() => [
     'ID',
@@ -47,7 +50,7 @@ export default function GameSessionList(props){
     'Paid'
   ], []);
 
-  const onDeleteHandler = async () => {};
+
 
   const bgColor = useColorModeValue('#FFFFFF', '#1A202C');
   const fgColor = useColorModeValue('darkviolet', 'darkviolet');
@@ -56,9 +59,13 @@ export default function GameSessionList(props){
     <>
       { isLoading ?
         <Flex height="70vh" justify="center" alignItems="center">
+
           <GridLoader color={fgColor}></GridLoader>
         </Flex>
         : <>
+          <Text
+            fontSize="24px"
+            fontWeight="bold" mb="1rem"> All Game Sessions </Text>
             <TableContainer>
               <Table>
                 <Thead>
@@ -83,6 +90,7 @@ export default function GameSessionList(props){
                           <Td> {s.inCharge?.substring(0,6)}... </Td>
                           <Td> {s.startTime} </Td>
                           <Td> {s.duration} </Td>
+                          <Td> {<FaCashRegister color={s.paid ? "green" : "grey"} size="20px"/>}</Td>
                           <Td> {s.cost} </Td>                                        
 
                           <Td bg={bgColor} style={{
@@ -96,7 +104,9 @@ export default function GameSessionList(props){
                               <AiFillDelete
                                 _hover={{ color: "red" }}
                                 cursor="pointer"
-                                onClick={ onDeleteHandler }/>
+                                onClick={ () => {
+                                  deleteSession(s.id);
+                                } }/>
                               <RouterLink to={"operation/" + s.id}>
                                 <AiFillInfoCircle />
                               </RouterLink>

@@ -1,3 +1,9 @@
+* Charicha Gaming Daily Operation.
+  * Charicha Gaming Daily Operation.
+  • Pie Chart for all the Finance Category for each branches.
+  • Branch Profile and User Profile.
+  • Updated logos in Home Page.
+
 
 * Business Logic to work on
 - Removing transactions should update the wallet data (done)

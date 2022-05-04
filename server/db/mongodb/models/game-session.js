@@ -6,9 +6,9 @@ var Schema = mongoose.Schema;
 var GameSessionSchema = new Schema({
   player: String,
   platform: String,
+  game: String,
   inCharge: { type: Schema.Types.ObjectId },
   startTime: String,
-  endTime: String,
   duration: Number,
   cost: Number,
   paid: Boolean

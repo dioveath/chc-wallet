@@ -3,9 +3,9 @@ var buildMakeGameSession = function(gameSessionValidator){
   return async ({
     player,
     platform,
+    game,
     inCharge,
     startTime,
-    endTime,
     duration,
     cost,
     paid
@@ -14,9 +14,9 @@ var buildMakeGameSession = function(gameSessionValidator){
     var error = gameSessionValidator({
       player,
       platform,
+      game,
       inCharge,
       startTime,
-      endTime,
       duration,
       cost,
       paid
@@ -27,9 +27,9 @@ var buildMakeGameSession = function(gameSessionValidator){
     return Object.freeze({
       getPlayer: () => player,
       getPlatform: () => platform,
+      getGame: () => game,
       getInCharge: () => inCharge,
       getStartTime: () => startTime,
-      getEndTime: () => endTime,
       getDuration: () => duration,
       getCost: () => cost,
       getPaid: () => paid

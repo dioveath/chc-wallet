@@ -2,6 +2,7 @@ import { useContext, createContext, useState, useEffect } from 'react';
 import config from '../config/config.js';
 import axios from 'axios';
 import useAuth from './Auth.js';
+import GameSessionService from '../Service/GameSessionService.js';
 
 const gameSessionContext = createContext();
 
@@ -13,6 +14,7 @@ export function GameSessionContextProvider(props){
   const { user } = useAuth();
   const [gameSessions, setGameSessions] = useState([]);
   const [isLoading, setLoading] = useState(true);
+
 
   useEffect(() => {
     setLoading(true);
@@ -38,10 +40,22 @@ export function GameSessionContextProvider(props){
     })();
   }, []);
 
-  const deleteSession = (id) => {
+  const deleteSession = async (id) => {
+    if(user == null) throw "You must log in first!";
+    const { gameSession, error } = await GameSessionService.deleteGameSession(id, user.accessToken);
+    if(gameSession !== undefined) setGameSessions(gameSessions.filter((e) => e.id !== id));
+    return { gameSession, error };
   };
 
-  const addSession = (id) => {
+  const addSession = async (session) => {
+    if(user == null) throw "You must log in first!";
+    const { gameSession, error } = await GameSessionService.addGameSession(session, user.accessToken);
+    if(gameSession !== undefined) setGameSessions([...gameSessions, gameSession]);
+    return { gameSession, error };
+  };
+
+  const updateSession = async (id, newProps) => {
+    
   };
 
   const contextValue = {gameSessions, setGameSessions, isLoading, deleteSession, addSession};

@@ -40,9 +40,9 @@ async function addGameSession(gameSessionInfo){
   var newGameSession = {
     player: gameSession.getPlayer(),
     platform: gameSession.getPlatform(),
+    game: gameSession.getGame(),
     inCharge: gameSession.getInCharge(),
     startTime: gameSession.getStartTime(),
-    endTime: gameSession.getEndTime(),
     duration: gameSession.getDuration(),
     cost: gameSession.getCost(),
     paid: gameSession.getPaid()
