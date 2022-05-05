@@ -17,7 +17,7 @@ export default function OperationPage(props){
         md: "0rem 4rem",
         lg: "0rem 12rem",
       }}>
-        {/* <GameSessionActive/> */}
+        <GameSessionActive/>
         <GameSessionAddForm/>
         <GameSessionList/>
       </Box>

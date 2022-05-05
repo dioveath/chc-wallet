@@ -1,23 +1,39 @@
 import {
   Text,
   Box,
-  useColorModeValue,
+  Button,
+  Stack,
   Flex,
-  Image
+  Image,
+  Wrap,
+  WrapItem,
+  useColorModeValue,
+  useToast
 } from '@chakra-ui/react';
 import { GridLoader } from 'react-spinners';
 import useGameSessions from '../../hooks/GameSession.js';
+import { Link as RouterLink } from 'react-router-dom';
+
+import { AiFillInfoCircle, AiFillDelete } from 'react-icons/ai';
+import { FaCashRegister } from 'react-icons/fa';
+import { IoIosPerson } from 'react-icons/io';
+import { MdGames } from 'react-icons/md';
+
+import GameSessionCard from '../../components/GameSessionCard.js';
 
 
 export default function GameSessionActive(props){
-  
-  const { isLoading, gameSessions } = useGameSessions();
+  const toast = useToast();
+  const { isLoading, gameSessions, updateSession, deleteSession } = useGameSessions();
 
-  const bgColor = useColorModeValue('#FFFFFF', '#1A202C');
   const fgColor = useColorModeValue('darkviolet', 'darkviolet');
+  const bgColor = useColorModeValue('white', 'gray.800');
+
+  const activeSessions = gameSessions.filter((g) => !g.paid);
 
   return (
     <>
+
       <Text
         fontSize="24px"
         fontWeight="bold" mb="1rem"> Active Sessions </Text>
@@ -27,13 +43,60 @@ export default function GameSessionActive(props){
           <GridLoader color={fgColor}></GridLoader>
         </Flex> :
         <>
-          <Box maxW='200px' borderWidth='1px' borderRadius='lg' overflow='hidden'>
-            <Image src={'/gaming/Grand_Theft_Auto_V.png'} alt={'PlayStation 4 - Charicha Gaming'} />
-          </Box>
-        </>
+          <Wrap justify={['center', 'space-between']} spacing='1rem'>
+            {
+              activeSessions.map((s) => {
+                return (<WrapItem key={s.id}>
+                          <GameSessionCard session={s}
+                                           onCashHandler={async () => {
+                                             const { updatedGameSession, error } = await updateSession(s.id, {
+                                               paid: !s.paid
+                                             });
 
+                                             if(error === undefined){
+                                               toast({
+                                                 title: `CASH ${updatedGameSession.paid ? 'IN' : 'REVERT'}`,
+                                                 description: `Cashed ${updatedGameSession.paid ? 'IN' : 'REVERT'} Rs.${s.cost}`,
+                                                 status: updatedGameSession.paid ? 'success' : 'error',
+                                                 duration: 3000,
+                                                 isClosable: true
+                                               });                                            
+                                             } else {
+                                               toast({
+                                                 title: `CASH REGISTER FAILED`,
+                                                 description: `Cash Register is not working properly. Please Try again later.`,
+                                                 status: 'error',
+                                                 duration: 3000,
+                                                 isClosable: true
+                                               });                                                     
+                                             }                            
+                                           }}
+                                           onDeleteHandler={async () => {
+                                             const { gameSession, error } = await deleteSession(s.id);
+                                             if(error === undefined){
+                                               toast({
+                                                 title: `Games Session ${gameSession.id} DELETED!`,
+                                                 description: `Cashed REVERT successfully`,
+                                                 status: 'success',
+                                                 duration: 3000,
+                                                 isClosable: true
+                                               });                                            
+                                             } else {
+                                               toast({
+                                                 title: `Session delete failed`,
+                                                 description: `Cash Register is not working properly. Please Try again later.`,
+                                                 status: 'error',
+                                                 duration: 3000,
+                                                 isClosable: true
+                                               });
+                                             }
+                                           }}/>
+                        </WrapItem>);
+              })
+            }
+          </Wrap>
+        </>
       }
-      
 
     </>
   );

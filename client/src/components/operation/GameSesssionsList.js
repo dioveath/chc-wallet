@@ -139,8 +139,25 @@ export default function GameSessionList(props){
                                   }}/>
                               </ActionButton>
                               <ActionButton
-                                onClick={ () => {
-                                  deleteSession(s.id);
+                                onClick={ async () => {
+                                  const { gameSession, error } = await deleteSession(s.id);
+                                  if(error === undefined){
+                                    toast({
+                                      title: `Games Session ${gameSession.id} DELETED!`,
+                                      description: `Cashed REVERT successfully`,
+                                      status: 'success',
+                                      duration: 3000,
+                                      isClosable: true
+                                    });                                            
+                                  } else {
+                                    toast({
+                                      title: `Session delete failed`,
+                                      description: `Cash Register is not working properly. Please Try again later.`,
+                                      status: 'error',
+                                      duration: 3000,
+                                      isClosable: true
+                                    });
+                                  }
                                 }}>
                                 <AiFillDelete
                                   _hover={{ color: "red" }}

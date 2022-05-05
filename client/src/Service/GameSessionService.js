@@ -45,9 +45,9 @@ const GameSessionService = {
       };
 
       let response = await axios.request(options);
-      console.log("Game Session deleted successfully of id: " + id);
+      console.log("Game Session deleted successfully of id: " + response.data.deleted.id);
       return {
-        gameSession: response.data
+        gameSession: response.data.deleted
       };
     } catch (e){
       return {

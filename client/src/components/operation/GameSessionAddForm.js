@@ -52,6 +52,14 @@ export default function GameSessionAddForm(props) {
     "PC Gaming"
   ];
 
+  const Games = [
+    "GTA V",
+    "FIFA",
+    "Free Fire",
+    "The Last of Us: Part I",
+    "Gran Turismo",
+    "Uncharted 4"
+  ];
 
   const timePickerCss = '/custom-rc-time-picker-' + useColorModeValue('light', 'dark') + '.css';
   useEffect(() => {
@@ -149,10 +157,13 @@ ${gameSession.platform.toUpperCase()} for ${gameSession.duration} Hour`;
           <WrapItem width={["300px", "300px"]}>
             <FormControl>
               <FormLabel htmlFor='game'> Session Game </FormLabel>
-              <Input id='game' type='text' ref={game}/>
+              <Select id='game' ref={game}>
+                {
+                  Games.map((g) => <option value={g} key={g}> {g} </option>)
+                }
+              </Select>                            
             </FormControl>
           </WrapItem>          
-
 
         </Wrap>
 
