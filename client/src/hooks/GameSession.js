@@ -13,6 +13,7 @@ export default function useGameSessions(){
 export function GameSessionContextProvider(props){
   const { user } = useAuth();
   const [gameSessions, setGameSessions] = useState([]);
+  const [pagination, setPagination] = useState({page: 1, limit: 6, totalPages: 1});  
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -25,11 +26,16 @@ export function GameSessionContextProvider(props){
           headers: {
             'Content-Type': 'application/json',
             Authorization: 'Bearer ' + user.accessToken            
-          }          
+          },
+          params: {
+            limit: pagination.limit,
+            page: pagination.page
+          }
         };
 
         const response = await axios.request(options);
         setGameSessions(response.data.gameSessions);
+        setPagination(response.data.pagination);
         setLoading(false);
       } catch (e){
         console.log(e);
@@ -37,7 +43,7 @@ export function GameSessionContextProvider(props){
       }
 
     })();
-  }, []);
+  }, [pagination.page, gameSessions.length]);
 
   const deleteSession = async (id) => {
     if(user == null) throw "You must log in first!";
@@ -68,6 +74,6 @@ export function GameSessionContextProvider(props){
     return { updatedGameSession, error };    
   };
 
-  const contextValue = {gameSessions, setGameSessions, isLoading, deleteSession, addSession, updateSession};
+  const contextValue = {gameSessions, setGameSessions, isLoading, deleteSession, addSession, updateSession, pagination, setPagination};
   return <gameSessionContext.Provider value={contextValue} {...props}/>;
 }

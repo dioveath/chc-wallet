@@ -36,7 +36,7 @@ export default function GameSessionList(props){
   const { user, userData } = useAuth();
   const toast = useToast();
 
-  const { isLoading, gameSessions, deleteSession, updateSession } = useGameSessions();
+  const { isLoading, gameSessions, deleteSession, updateSession, pagination, setPagination } = useGameSessions();
 
   const columns = useMemo(() => [
     'ID',
@@ -193,12 +193,12 @@ export default function GameSessionList(props){
             </TableContainer>
             <Box height="0.5rem"></Box>
             <HStack spacing='1rem'>
-              {/* { */}
-              {/*   Array.from({length: props.pagination.totalPages}, (_,i) => i+1).map((i) => */}
-              {/*     <Button variant={props.page == i ? 'solid' : 'outline'} colorScheme='teal' key={i} onClick={() => { props.setPage(i); }}> */}
-              {/*       { i } */}
-              {/*     </Button>) */}
-              {/* }     */}
+              {
+                Array.from({length: pagination.totalPages}, (_,i) => i+1).map((i) =>
+                  <Button variant={pagination.page == i ? 'solid' : 'outline'} colorScheme='teal' key={i} onClick={() => { setPagination({...pagination, page: i}); }}>
+                    { i }
+                  </Button>)
+              }    
             </HStack>
             <Box height="0.5rem"></Box>
           </>
