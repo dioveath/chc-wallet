@@ -31,7 +31,7 @@ const TransactionService = {
     }
   }, 
 
-  addTrasaction: async (transaction, branchCode, accessToken) => {
+  addTransaction: async (transaction, branchCode, accessToken) => {
     try {
       if(!isValidTransaction(transaction)) {
         return       {
@@ -41,8 +41,6 @@ const TransactionService = {
         };
       }
 
-      let transactionId = generateRandomId(10);
-
       let options = {
         method: 'POST',
         url: `${config.serverUrl}/api/v1/transactions`,
@@ -51,14 +49,13 @@ const TransactionService = {
           Authorization: 'Bearer ' + accessToken
         },
         data: {
-          id: transactionId,
           ...transaction,
           branchCode: branchCode
         }
       };
 
       let response = await axios.request(options);
-      console.log("transaction added successfully with id: " + transactionId);
+      console.log("transaction added successfully with id: " + response.data.newTransaction.id);
       return {
         transaction: response.data.newTransaction
       };        
@@ -83,7 +80,7 @@ const TransactionService = {
       let response = await axios.request(options);
       console.log("transaction deleted successfully of id: " + transactionId);
       return {
-        transaction: response.data
+        transaction: response.data.deleted
       };
     } catch (e){
       return {

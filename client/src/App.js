@@ -3,6 +3,7 @@ import { ChakraProvider } from '@chakra-ui/react';
 import HomePage from './pages/home/index.js';
 import FinancePage from './pages/finance/FinancePage.js';
 import FinanceLayoutPage from './pages/finance/index.js';
+import FinanceManagePage from './pages/finance/FinanceManagePage.js';
 import LoginPage from './pages/login/index.js';
 import RegisterPage from './pages/register/index.js';
 import TransactionPage from './pages/transaction/index.js';
@@ -46,37 +47,32 @@ function App() {
         };
 
         const response = await axios.request(options);
+        const newOptions = {
+          method: 'GET',
+          url: `${config.serverUrl}/api/v1/branch/${response.data.user.branchId}`,
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        };
 
-        if(response.data.status != 'fail') {
+        const newResponse = await axios.request(newOptions);
+        setUserData({
+          id: response.data.user.id,
+          fullName: response.data.user.fullName,
+          email: response.data.user.email,          
+          phoneNumber: response.data.user.phoneNumber,
+          emailVerified: response.data.user.emailVerified,
+          branchId: response.data.user.branchId,
+          branch: newResponse.data.branch
+        });
 
-
-          const newOptions = {
-            method: 'GET',
-            url: `${config.serverUrl}/api/v1/branch/${response.data.user.branchId}`,
-            headers: {
-              'Content-Type': 'application/json',
-            }
-          };
-
-          const newResponse = await axios.request(newOptions);
-          setUserData({
-            id: response.data.user.id,
-            fullName: response.data.user.fullName,
-            email: response.data.user.email,          
-            phoneNumber: response.data.user.phoneNumber,
-            emailVerified: response.data.user.emailVerified,
-            branchId: response.data.user.branchId,
-            branch: newResponse.data.branch
-          });
-
-        }
 
       } catch(e){
         console.log(e.message);
       }
 
     })();
-  }, [userData.id, user]);
+  }, [user]);
   
   return (
     <ChakraProvider theme={theme}>
@@ -92,7 +88,8 @@ function App() {
             <>
               <Route path='finance' element={<FinanceLayoutPage/>}>
                 <Route index element={<FinancePage/>}/>
-                <Route path='transaction/:id' element={<TransactionPage/>}/>
+                <Route path='manage-transactions' element={<FinanceManagePage/>}/>
+                <Route path='manage-transactions/:id' element={<TransactionPage/>}/>
               </Route>
 
               <Route path='operation' element={<OperationLayoutPage/>}>

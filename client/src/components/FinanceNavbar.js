@@ -2,7 +2,6 @@ import { useLocation, Link as RouterLink } from 'react-router-dom';
 import { Text, Flex, Box } from '@chakra-ui/react';
 
 
-
 export default function FinanceNavbar(){
   const location = useLocation();
   const splitted = location.pathname.split('/');
@@ -12,6 +11,12 @@ export default function FinanceNavbar(){
   return(
     <>
       <Flex alignItems="center">
+        <Flex>
+          <RouterLink to='/'>
+            <Text fontSize="lg" color="blue.400" textTransform="capitalize"> Dashboard </Text>
+          </RouterLink>
+          <Text fontSize="lg" px={2}> / </Text>
+        </Flex>        
         {
           splitted.map((page, index, array) => {
             pageHref += "/" + page;

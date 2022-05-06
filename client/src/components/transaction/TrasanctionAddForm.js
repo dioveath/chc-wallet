@@ -23,7 +23,7 @@ import {
 import axios from 'axios';
 import config from '../../config/config.js';
 import useAuth from '../../hooks/Auth.js';
-import { TransactionService } from '../../Service/TransactionService.js';
+import useTransactions from '../../hooks/Transaction.js';
 
 export default function TransactionAddForm(props) {
   const toast = useToast();
@@ -57,6 +57,7 @@ export default function TransactionAddForm(props) {
 
   const { user, userData } = useAuth();
   const [ branch, setBranch ] = useState({id: 0});
+  const { addTransaction } = useTransactions();
 
 
   useEffect(() => {
@@ -194,8 +195,9 @@ export default function TransactionAddForm(props) {
             "doneBy": user.userId,
           };
 
-          const { transaction, error } = await TransactionService.addTrasaction(newTransaction, branch.codeName, user.accessToken);
-          if(error != undefined && error != null) {
+          const { transaction, error } = await addTransaction(newTransaction, branch.codeName, user.accessToken);
+          console.log(transaction, error);
+          if(error !== undefined) {
             error.forEach((e) => {
               toast({
                 title: 'Transaction Add Failed',
@@ -214,10 +216,6 @@ export default function TransactionAddForm(props) {
               isClosable: true
             });
 
-            props.setTransactions([
-              ...props.transactions,
-              transaction
-            ]);
           }
 
         }}>

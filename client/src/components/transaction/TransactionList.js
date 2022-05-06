@@ -22,12 +22,15 @@ import { AiFillDelete } from 'react-icons/ai';
 
 import axios from 'axios';
 import useAuth from '../../hooks/Auth.js';
+import useTransactions from '../../hooks/Transaction.js';
 import config from '../../config/config.js';
-import { TransactionService } from '../../Service/TransactionService.js';
 import { AiFillInfoCircle } from 'react-icons/ai';
 import { Link as RouterLink } from 'react-router-dom';
 
-export default function TransactionList(props){
+
+export default function TransactionList(){
+
+  const { transactions, setTransactions, pagination, setPagination, deleteTransaction } = useTransactions();
 
   const { user, userData } = useAuth();
   const toast = useToast();
@@ -84,7 +87,7 @@ export default function TransactionList(props){
           </Thead>
           <Tbody>
             {
-              props.transactions.map((t) => {
+              transactions.map((t) => {
                 return (
                   <Tr key={t.id}>
                     <Td> {t.id.substring(0, 6)}... </Td>
@@ -107,7 +110,7 @@ export default function TransactionList(props){
                           _hover={{ color: "red" }}
                           cursor="pointer"
                           onClick={ async () => {
-                            const { transaction, error } = await TransactionService.deleteTransaction(t.id, user.accessToken);
+                            const { transaction, error } = await deleteTransaction(t.id, user.accessToken);
 
                             if(error != undefined && error != null) {
                               error.forEach((e) => {
@@ -128,15 +131,15 @@ export default function TransactionList(props){
                                 isClosable: true
                               });
 
-                              props.setTransactions([
-                                ...props.transactions.filter((t) => t.id !== transaction.deleted.id)
+                              setTransactions([
+                                ...transactions.filter((t) => t.id !== transaction.deleted.id)
                               ]);
 
                             }                          
 
                           }}/>
 
-                        <RouterLink to={"transaction/" + t.id}>
+                        <RouterLink to={"/finance/manage-transactions/" + t.id}>
                           <AiFillInfoCircle />
                         </RouterLink>
                       </Flex>
@@ -167,8 +170,8 @@ export default function TransactionList(props){
       <Box height="0.5rem"></Box>
       <HStack spacing='1rem'>
         {
-          Array.from({length: props.pagination.totalPages}, (_,i) => i+1).map((i) =>
-            <Button variant={props.page == i ? 'solid' : 'outline'} colorScheme='teal' key={i} onClick={() => { props.setPage(i); }}>
+          Array.from({length: pagination.totalPages}, (_,i) => i+1).map((i) =>
+            <Button variant={pagination.page == i ? 'solid' : 'outline'} colorScheme='teal' key={i} onClick={() => { setPagination({...pagination, page: i}); }}>
               { i }
             </Button>)
         }    
