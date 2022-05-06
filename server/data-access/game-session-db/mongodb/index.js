@@ -7,6 +7,9 @@ const serialize = require('./serializer');
 const makeGameSession = require('../../../models/game-session/index').makeGameSession;
 const makeUpdateGameSession = require('../../../models/game-session/index').makeUpdateGameSession;
 const errorFormatter = require('./errorFormatter');
+const walletAccess = require('../../wallet-db/index.js');
+const { getNumberOfDays } = require('../../../utils/dateutils.js');
+
 
 function listGameSessions(httpQuery){
   const { query, ...paginateQuery } = httpQuery;
@@ -55,17 +58,90 @@ async function updateGameSession(id, updateGameSessionInfo){
   if(!id) 
     throw new Error("You must supply id!");
 
-  // var gameSessionData = await GameSession.findById(id);  
-  // if(gameSessionData === null) throw new Error("No GameSession with id: " + id);
-
   const validUpdateGameSessionData = await makeUpdateGameSession(updateGameSessionInfo);
 
   // if error is not thrown, then we can update with updateGameSessionInfo in database
-  return GameSession.findByIdAndUpdate(id, updateGameSessionInfo, { new: true }).then(serialize).catch(errorFormatter);
+  return GameSession.findByIdAndUpdate(id, updateGameSessionInfo, { new: true }).then(async (data) => {
+    const sessionData = serialize(data);
+
+    // console.log(sessionData.updatedAt.toISOString());
+    let splittedDate = sessionData.updatedAt.toISOString().split('-');
+    let year = splittedDate[0];
+    let month = splittedDate[1];
+    let foundWallet = await walletAccess.findWalletBy({
+      branchCode: 'chcGam',
+      year: year
+    });
+
+    if(foundWallet.length !== 0) {
+      await addGameSessionToWallet(sessionData, foundWallet[0], month, splittedDate[2]);
+    } else {
+      console.log("wallet not found!, creating new year wallet!");
+      let newWallet = await walletAccess.addWallet({
+        branchCode: 'chcGam',
+        year: year,
+        data: Array.from({length: getNumberOfDays(year, 12)}, (_, __) => 0),
+        totalAmount: 0
+      });
+
+      await addGameSessionToWallet(sessionData, newWallet, month, splittedDate[2]);
+    }
+
+    return sessionData;
+  }).catch(errorFormatter);
+}
+
+async function addGameSessionToWallet(session, wallet, month, day){
+  let startIndex = getNumberOfDays(wallet.year, month-1) + parseInt(day) - 1;
+
+  for(let i = startIndex; i < getNumberOfDays(wallet.year, new Date().getMonth() + 1); i++){
+    if(session.paid)
+      wallet.data[i] += parseInt(session.cost);
+    else
+      wallet.data[i] -= parseInt(session.cost);          
+  }
+
+  if(session.paid) {
+    wallet.totalAmount += parseInt(session.cost);
+  } else {
+    wallet.totalAmount -= parseInt(session.cost);    
+  }
+
+  let updatedWallet = await walletAccess.updateWallet(wallet.id, wallet);
+  console.log("wallet updated, with " + session.cost + " " + "Income from Gaming Session");    
 }
 
 
 async function deleteGameSession(id){
+  let session = await findGameSessionById(id);
+
+  if(session.paid) {
+    let splittedDate = session.updatedAt.toISOString().split('-');
+    let year = splittedDate[0];
+    let month = splittedDate[1];
+    let foundWallet = await walletAccess.findWalletBy({
+      branchCode: 'chcGam',
+      year: year
+    });
+
+    // reverse the paid for wallet balance
+    session.paid = !session.paid;
+
+    if(foundWallet.length !== 0) {
+      await addGameSessionToWallet(session, foundWallet[0], month, splittedDate[2]);
+    } else {
+      console.log("wallet not found!, creating new year wallet!");
+      let newWallet = await walletAccess.addWallet({
+        branchCode: 'chcGam',
+        year: year,
+        data: Array.from({length: getNumberOfDays(year, 12)}, (_, __) => 0),
+        totalAmount: 0
+      });
+
+      await addGameSessionToWallet(session, newWallet, month, splittedDate[2]);
+    }
+  }
+
   return GameSession.findByIdAndDelete(id)
     .then(res => {
       if(!res)
@@ -74,6 +150,7 @@ async function deleteGameSession(id){
           code: 11011, // custom error code
           _id: id, 
         };
+
       return {
         id: res._id.toString(),
       };

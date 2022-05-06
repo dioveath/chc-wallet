@@ -1,4 +1,3 @@
-
 // throws appropriate business frontend error for mongoose error and mongoose-unique-validator errors
 
 module.exports = (error) => {

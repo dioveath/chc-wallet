@@ -10,6 +10,8 @@ const makeTransaction = require('../../../models/transaction/index').makeTransac
 const makeUpdateTransaction = require('../../../models/transaction/index').makeUpdateTransaction;
 const errorFormatter = require('./errorFormatter');
 const walletAccess = require('../../wallet-db/index.js');
+const { getNumberOfDays } = require('../../../utils/dateutils.js');
+
 
 function listTransactions(httpQuery){
   const { query, ...paginateQuery } = httpQuery;
@@ -78,35 +80,6 @@ async function addTransaction(transactionInfo){
   return Transaction.create(newTransaction).then(serialize).catch(errorFormatter);
 }
 
-
-
-function daysInMonth(year, month){
-  return new Date(year, month, 0).getDate();
-}
-
-function getNumberOfDays(year, month) {
-  if(month == 0) return 0;
-  if(month > 12) return 365;
-  let days = 0;
-  for(let i = 0; i < month; i++){
-    days += daysInMonth(year, i+1);
-  }
-  return days;
-}
-
-function getMonthFromNumDays(year, days){
-  if(days == 0) return 1;
-  if(days > 365) return 12;
-  let checkDays
-  for(let i = 0; i < 366; i++){
-    checkDays += daysInMonth(year, i+1);
-    if(checkDays > days) return i;
-  }
-  return 12;
-}
-
-
-
 async function addTransactionToWallet(transaction, wallet, month, day){
   let startIndex = getNumberOfDays(wallet.year, month-1) + parseInt(day) - 1;
 
@@ -132,12 +105,11 @@ async function updateTransaction(id, updateTransactionInfo){
   if(!id) 
     throw new Error("You must supply id!");
 
-  // var transactionData = await Transaction.findById(id);  
-  // if(transactionData === null) throw new Error("No Transaction with id: " + id);
-
   const validUpdateTransactionData = await makeUpdateTransaction(updateTransactionInfo);
 
-  // if error is not thrown, then we can update with updateTransactionInfo in database
+  // TODO: if transaction update is of type Income/Expense
+  // we need to update wallet accordingly
+
   return Transaction.findByIdAndUpdate(id, updateTransactionInfo, { new: true }).then(serialize).catch(errorFormatter);
 }
 
