@@ -7,7 +7,7 @@ import LoginPage from './pages/login/index.js';
 import RegisterPage from './pages/register/index.js';
 import TransactionPage from './pages/transaction/index.js';
 import OperationLayoutPage from './pages/operation/index.js';
-import OperationPage from './pages/operation/OperationPage.js';
+import GamingOperationPage from './pages/operation/GamingOperationPage.js';
 import ListOperation from './pages/operation/ListOperation.js';
 
 import config from './config/config.js';
@@ -18,7 +18,8 @@ import './App.css';
 import {
   Route,
   Routes,
-  BrowserRouter as Router
+  BrowserRouter as Router,
+  Navigate
 } from "react-router-dom";
 
 import axios from 'axios';
@@ -26,7 +27,6 @@ import useAuth from './hooks/Auth.js';
 
 
 function App() {
-
   const { user, userData, setUserData, updateToken } = useAuth();
 
   useEffect(() => {
@@ -77,10 +77,7 @@ function App() {
 
     })();
   }, [userData.id, user]);
-
-
-
-
+  
   return (
     <ChakraProvider theme={theme}>
       <Fonts/>
@@ -91,15 +88,23 @@ function App() {
           <Route path='login' element={<LoginPage/>}/>
           <Route path='register' element={<RegisterPage/>}/>
 
-          <Route path='finance' element={<FinanceLayoutPage/>}>
-            <Route index element={<FinancePage/>}/>
-            <Route path='transaction/:id' element={<TransactionPage/>}/>
-          </Route>
+          { user != null ?
+            <>
+              <Route path='finance' element={<FinanceLayoutPage/>}>
+                <Route index element={<FinancePage/>}/>
+                <Route path='transaction/:id' element={<TransactionPage/>}/>
+              </Route>
 
-          <Route path='operation' element={<OperationLayoutPage/>}>
-            <Route index element={<ListOperation/>}></Route>
-            <Route path='chcGam' element={<OperationPage/>}/>
-          </Route>
+              <Route path='operation' element={<OperationLayoutPage/>}>
+                <Route index element={<ListOperation/>}></Route>
+                { userData?.branch?.codeName == 'chcGam' ?
+                  <Route path='gaming-sessions' element={<GamingOperationPage/>}/>
+                  : <></> }
+              </Route>
+            </> :
+            <>
+              <Route path='*' element={<Navigate to='/'/>}/>
+            </> }
 
         </Routes>
       </Router>

@@ -17,10 +17,9 @@ import { Link as RouterLink } from 'react-router-dom';
 import { AiFillInfoCircle, AiFillDelete } from 'react-icons/ai';
 import { FaCashRegister } from 'react-icons/fa';
 import { IoIosPerson } from 'react-icons/io';
-import { MdGames } from 'react-icons/md';
+import { MdGames, MdVideogameAssetOff } from 'react-icons/md';
 
 import GameSessionCard from '../../components/GameSessionCard.js';
-
 
 export default function GameSessionActive(props){
   const toast = useToast();
@@ -43,6 +42,10 @@ export default function GameSessionActive(props){
           <GridLoader color={fgColor}></GridLoader>
         </Flex> :
         <>
+          { activeSessions.length == 0 ? <Flex height="30vh" justify="center" alignItems="center" direction="column">
+                                           <MdVideogameAssetOff size="50" color="brown"/>
+                                           <Text fontSize="24px" fontWeight="700"> No active Sessions! </Text>
+                                         </Flex> : <></>}
           <Wrap justify={['center', 'space-between']} spacing='1rem'>
             {
               activeSessions.map((s) => {

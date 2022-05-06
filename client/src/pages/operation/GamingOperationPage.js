@@ -18,7 +18,11 @@ export default function OperationPage(props){
         lg: "0rem 12rem",
       }}>
         <GameSessionActive/>
+        <Box height="1rem" borderBottom="1px solid gray"/>
+        <Box height="1rem"/>        
         <GameSessionAddForm/>
+        <Box height="1rem" borderBottom="1px solid gray"/>
+        <Box height="1rem"/>        
         <GameSessionList/>
       </Box>
     </GameSessionContextProvider>
