@@ -58,7 +58,8 @@ export default function GameSessionAddForm(props) {
     "Free Fire",
     "The Last of Us: Part I",
     "Gran Turismo",
-    "Uncharted 4"
+    "Uncharted 4",
+    "PUBG"
   ];
 
   const timePickerCss = '/custom-rc-time-picker-' + useColorModeValue('light', 'dark') + '.css';

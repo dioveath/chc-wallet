@@ -28,11 +28,48 @@ const EmptyCard = () => {
          </Box>;
 };
 
+const Games = [
+  {
+    name: 'GTA V',
+    src: '/gaming/Grand_Theft_Auto_V.png'
+  },
+  {
+    name: 'FIFA',
+    src:'/gaming/Fifa_22.jpg'
+  },
+  {
+    name: 'Free Fire',
+    src:'/gaming/Free_fire.jpg'
+  },
+  {
+    name: 'The Last of Us: Part I',
+    src:'/gaming/The_Last_of_Us_Part_I.jpg'
+  },
+  {
+    name: 'Gran Turismo',
+    src:'/gaming/Gran_Turismo.webp'
+  },
+  {
+    name: 'Uncharted 4',
+    src:'/gaming/Uncharted_4.jpg'
+  },
+  {
+    name: 'PUBG',
+    src:'/gaming/PUBG.jpg'
+  },
+    
+];
+
+
 export default function GameSessionCard({ session, onCashHandler, onInfoHandler, onDeleteHandler, ...props}){
   const bgColor = useColorModeValue('white', 'gray.800');
   const { player, startTime, duration, platform, game, cost, createdAt } = session;
   const [ remainTime, setRemainTime] = useState('00:00:00');
   const [ overflow, setOverflow] = useState(false);
+
+  console.log(game);
+  const imgSrc = Games.find((g) => g.name == game).src;
+  console.log(imgSrc);
 
   useEffect(() => {
     if(session === undefined) return;
@@ -58,9 +95,9 @@ export default function GameSessionCard({ session, onCashHandler, onInfoHandler,
          overflow='hidden'>
 
       <Box w="100%" position='relative'>
-        <Image src={'/gaming/Grand_Theft_Auto_V.png'}
+        <Image src={imgSrc}
                alt={'PlayStation 4 - Charicha Gaming'}
-               width="300px" height="250px"
+               width="300px" height="300px"
                objectFit="cover"
                transition='all 0.2s ease'/>
 

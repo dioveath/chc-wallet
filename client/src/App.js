@@ -123,7 +123,7 @@ function App() {
       }
 
     })();
-  }, [user.id]);
+  }, [user]);
   
   return (
     <ChakraProvider theme={theme}>
