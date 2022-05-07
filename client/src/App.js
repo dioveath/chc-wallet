@@ -26,9 +26,60 @@ import {
 import axios from 'axios';
 import useAuth from './hooks/Auth.js';
 
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+  ArcElement
+} from 'chart.js';
+import AnnotationPlugin from 'chartjs-plugin-annotation';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
+import { useMediaQuery } from 'react-responsive';
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Filler,
+  ArcElement,
+  AnnotationPlugin,
+  ChartDataLabels
+);
+
+ChartJS.defaults.font = {
+  size: 13,
+  family: 'Nunito'
+};
+
 
 function App() {
-  const { user, userData, setUserData, updateToken } = useAuth();
+  const isTablet = useMediaQuery({ query: '(min-width: 768px)'});
+  if(isTablet)
+    ChartJS.defaults.font = {
+      size: 16,
+      family: 'Nunito'    
+    };
+  else
+    ChartJS.defaults.font = {
+      size: 13,
+      family: 'Nunito'
+    };
+
+  ChartJS.defaults.set('plugins.datalabels', {
+    color: 'rgba(0, 0, 0, 0)'
+  });
+
+  const { user, userData, setUserData, updateToken } = useAuth();  
 
   useEffect(() => {
     updateToken();
@@ -72,7 +123,7 @@ function App() {
       }
 
     })();
-  }, [user]);
+  }, [user.id]);
   
   return (
     <ChakraProvider theme={theme}>
@@ -84,7 +135,7 @@ function App() {
           <Route path='login' element={<LoginPage/>}/>
           <Route path='register' element={<RegisterPage/>}/>
 
-          { user != null ?
+          { userData.id != 0 ?
             <>
               <Route path='finance' element={<FinanceLayoutPage/>}>
                 <Route index element={<FinancePage/>}/>

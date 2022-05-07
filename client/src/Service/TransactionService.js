@@ -29,7 +29,34 @@ const TransactionService = {
     } catch(e){
       console.log(e);
     }
-  }, 
+  },
+
+  getAllTransactions: async (props, accessToken) => {
+    try {
+      let options = {
+        method: 'GET',
+        url: `${config.serverUrl}/api/v1/transactions`,
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + accessToken
+        },
+        params: {
+          limit: 100000,
+          query: {...props}
+        },
+      };
+
+      const response = await axios.request(options);
+      return {
+        transactions: response.data.transactions
+      };              
+    } catch(e){
+      console.log(e);
+      return {
+        error: e.response.data.errorList
+      };
+    }
+  },
 
   addTransaction: async (transaction, branchCode, accessToken) => {
     try {

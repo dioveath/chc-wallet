@@ -1,27 +1,6 @@
-## Charicha Wallet
-A way to manage cash flow of a business.
+  ci-website
 
-<p align="center">
-	<img alt="" src="chc_finance.png" width="80%"/>
-</p>
-
-
-## Technologies Used
-MERN Stack 
-
-### Front end
-- ReactJS
-- Chakra UI
-- ChartJS
-
-### Back end
-- NodeJS
-- Express
-- MongoDB
-
-
-## Folder Structure 
-```
+  chc-finance
     .log
     client
       build
@@ -127,4 +106,3 @@ MERN Stack
     TODO.org
     chc_finance.png
     docker-compose.yml
-```

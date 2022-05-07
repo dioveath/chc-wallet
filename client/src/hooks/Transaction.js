@@ -28,8 +28,7 @@ export function TransactionContextProvider(props){
             Authorization: 'Bearer ' + user.accessToken            
           },
           params: {
-            limit: pagination.limit,
-            page: pagination.page,
+            ...pagination,
             query: {
               'branchCode': userData.branch.codeName
             }
@@ -46,7 +45,7 @@ export function TransactionContextProvider(props){
       }
 
     })();
-  }, [pagination.page]);
+  }, [pagination.page, pagination.limit, transactions.length]);
 
   const deleteTransaction = async (id) => {
     if(user == null) throw "You must log in first!";

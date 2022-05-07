@@ -30,7 +30,7 @@ import { Link as RouterLink } from 'react-router-dom';
 
 export default function TransactionList(){
 
-  const { transactions, setTransactions, pagination, setPagination, deleteTransaction } = useTransactions();
+  const { transactions, pagination, setPagination, deleteTransaction } = useTransactions();
 
   const { user, userData } = useAuth();
   const toast = useToast();
@@ -123,17 +123,14 @@ export default function TransactionList(){
                                 });                
                               });
                             } else {
+                              console.log(transaction);
                               toast({
                                 title: 'Transaction Deleted Successfully',
-                                description: `Transaction ID: ${transaction.deleted.id}`,
+                                description: `Transaction ID: ${transaction.id}`,
                                 status: 'info',
                                 duration: 3000,
                                 isClosable: true
                               });
-
-                              setTransactions([
-                                ...transactions.filter((t) => t.id !== transaction.deleted.id)
-                              ]);
 
                             }                          
 

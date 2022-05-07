@@ -3,16 +3,46 @@ import {
   Text,
   List,
   ListItem,
-  Flex
+  Flex,
+  Wrap,
+  WrapItem
 } from '@chakra-ui/react';
 import { GiMoneyStack } from 'react-icons/gi';
 import useAuth from '../../hooks/Auth.js';
+import { useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-
+import FinancePieChart from '../../components/finance/FinancePieChart.js';
+import { TransactionService } from '../../Service/TransactionService.js';
 
 function FinancePage(props){
+  const { user, userData } = useAuth();
+  const [ allTransactions, setAllTransactions ] = useState([]);
+  const [ incomeTransactions, setIncomeTransactions ] = useState([]);
+  const [ expenseTransactions, setExpenseTransactions ] = useState([]);  
 
-  const { userData } = useAuth();
+  useEffect(() => {
+    if(userData.id == 0) return;
+    (async()=> {
+
+      const {transactions, error} = await TransactionService.getAllTransactions({
+        'branchCode': userData.branch.branchCode,
+      }, user.accessToken);
+
+      if(error){
+        console.log(error);
+        return;
+      }
+
+      if(transactions) {
+        setAllTransactions(transactions);
+        setIncomeTransactions(transactions.filter((t) => t.transactionType == 'Income'));
+        setExpenseTransactions(transactions.filter((t) => t.transactionType == 'Expense'));        
+      }
+      
+    })();
+  }, [userData.id]);
+
+
 
   return (
 
@@ -22,7 +52,40 @@ function FinancePage(props){
       lg: "1rem 12rem",
     }} minHeight='70vh'>
 
-      <Text fontSize="1.4rem" fontWeight="700" mb="1rem"> {userData.branch.name } Finance </Text>
+      <Flex justifyContent='center'
+            alignItems='center'
+            gap="1rem"
+            wrap="wrap">
+        <WrapItem>
+          <Box width={{'sm': '350px', 'md': '350px'}}>
+            <FinancePieChart transactions={allTransactions}/>
+            <Box bg='purple.600' p='0.5rem' borderRadius='0.4rem' my='1rem'>
+              <Text align='center' fontSize='1.2rem' fontWeight='600'> Cash Flow Pie Chart </Text>
+            </Box>
+          </Box>          
+        </WrapItem>
+
+        <WrapItem>
+          <Box width={{'sm': '350px', 'md': '350px'}}>
+            <FinancePieChart transactions={incomeTransactions}/>
+            <Box bg='green.600' p='0.5rem' borderRadius='0.4rem' my='1rem'>
+              <Text align='center' fontSize='1.2rem' fontWeight='600'> Income Flow Pie Chart </Text>
+            </Box>            
+          </Box>                  
+        </WrapItem>
+
+        <WrapItem>
+          <Box width={{'sm': '350px', 'md': '350px'}}>
+            <FinancePieChart transactions={expenseTransactions}/>
+            <Box bg='red.600' p='0.5rem' borderRadius='0.4rem' my='1rem'>
+              <Text align='center' fontSize='1.2rem' fontWeight='600'> Expense Flow Pie Chart </Text>
+            </Box>                        
+          </Box>                  
+        </WrapItem>        
+
+      </Flex>
+
+      <Text fontSize="1.4rem" fontWeight="700" mb="1rem"> {userData?.branch?.name } Finance </Text>
       <List>
         <ListItem>
           <RouterLink to='/finance/manage-transactions'>
@@ -45,7 +108,6 @@ function FinancePage(props){
     </Box>
   );
 }
-
 
 export default FinancePage;
 

@@ -6,7 +6,6 @@ import { Box } from '@chakra-ui/react';
 import { TransactionContextProvider } from '../../hooks/Transaction.js';
 
 function FinanceLayoutPage(props){
-
   return (
     <>
       <TransactionContextProvider>          
