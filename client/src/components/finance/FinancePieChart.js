@@ -50,7 +50,6 @@ const COLORS = [
 
 
 
-
 function FinancePieChart({ transactions }){
   const [pieData, setPieData] = useState(defaultData);
   const [pieOptions, setPieOptions] = useState(defaultOptions);

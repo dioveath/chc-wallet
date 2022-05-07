@@ -25,7 +25,7 @@ function FinancePage(props){
     (async()=> {
 
       const {transactions, error} = await TransactionService.getAllTransactions({
-        'branchCode': userData.branch.branchCode,
+        'branchCode': userData.branch.codeName,
       }, user.accessToken);
 
       if(error){
