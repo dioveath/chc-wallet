@@ -25,6 +25,7 @@ import useAuth from '../../hooks/Auth.js';
 import useTransactions from '../../hooks/Transaction.js';
 import config from '../../config/config.js';
 import { AiFillInfoCircle } from 'react-icons/ai';
+import { RiArrowDownSFill, RiArrowUpSFill } from 'react-icons/ri';
 import { Link as RouterLink } from 'react-router-dom';
 
 
@@ -68,6 +69,7 @@ export default function TransactionList(){
   ], []);
 
   const bgColor = useColorModeValue('#FFFFFF', '#1A202C');
+  const { sort } = pagination;
 
   return (
     <>
@@ -75,7 +77,28 @@ export default function TransactionList(){
         <Table>
           <Thead>
             <Tr>
-              { columns.map((h) => <Th key={h.Header} {...(h.Header === "Amount" ? {isNumeric: ''} : {})}> { h.Header }</Th>)}
+              { columns.map((h) =>
+                <Th key={h.Header} {...(h.Header === "Amount" ? {isNumeric: ''} : {})}
+                    _hover={{
+                      'cursor': 'pointer'
+                    }}
+                    onClick={() => {
+                      if(sort !== undefined) {
+                        let newSort = sort;
+
+                        if(sort == h.accessor) newSort = '-'+ sort; // to desc
+                        else if(sort == '-' + h.accessor) newSort = sort.slice(1, sort.length); // to asc
+                        else newSort = h.accessor; // new sort
+
+                        setPagination({...pagination, sort: newSort});
+                      }
+                    }}>
+                  <Flex alignItems='center'>
+                    { h.Header }
+                    { h.accessor == sort && <RiArrowDownSFill size='20'/>}
+                    { '-' + h.accessor == sort && <RiArrowUpSFill size='20'/>}                                      
+                  </Flex>
+                </Th>)}
 
               <Th bg={bgColor} style={{
                 "position": "sticky",

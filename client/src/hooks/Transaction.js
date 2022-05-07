@@ -13,7 +13,7 @@ export default function useTransactions(){
 export function TransactionContextProvider(props){
   const { user, userData } = useAuth();
   const [transactions, setTransactions] = useState([]);
-  const [pagination, setPagination] = useState({page: 1, limit: 6, totalPages: 1});
+  const [pagination, setPagination] = useState({page: 1, limit: 6, totalPages: 1, sort: '-date'});
   const [isLoading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,7 +37,7 @@ export function TransactionContextProvider(props){
 
         const response = await axios.request(options);
         setTransactions(response.data.transactions);
-        setPagination(response.data.pagination);
+        setPagination({...pagination, ...response.data.pagination});
         setLoading(false);
       } catch (e){
         console.log(e);
@@ -45,7 +45,7 @@ export function TransactionContextProvider(props){
       }
 
     })();
-  }, [pagination.page, pagination.limit, transactions.length]);
+  }, [pagination.page, pagination.limit, transactions.length, pagination.sort]);
 
   const deleteTransaction = async (id) => {
     if(user == null) throw "You must log in first!";

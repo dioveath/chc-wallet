@@ -67,9 +67,7 @@ export default function GameSessionCard({ session, onCashHandler, onInfoHandler,
   const [ remainTime, setRemainTime] = useState('00:00:00');
   const [ overflow, setOverflow] = useState(false);
 
-  console.log(game);
   const imgSrc = Games.find((g) => g.name == game).src;
-  console.log(imgSrc);
 
   useEffect(() => {
     if(session === undefined) return;

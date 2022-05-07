@@ -22,6 +22,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { GridLoader } from 'react-spinners';
 import { AiFillInfoCircle, AiFillDelete } from 'react-icons/ai';
 import { FaCashRegister } from 'react-icons/fa';
+import { RiArrowDownSFill, RiArrowUpSFill } from 'react-icons/ri';
 
 import axios from 'axios';
 import useAuth from '../../hooks/Auth.js';
@@ -39,18 +40,41 @@ export default function GameSessionList(props){
   const { isLoading, gameSessions, deleteSession, updateSession, pagination, setPagination } = useGameSessions();
 
   const columns = useMemo(() => [
-    'ID',
-    'Player',
-    'In Charge',
-    'Start Time',
-    'Duration',
-    'Cost',
-    'Paid'
+    {
+      Header: 'ID',
+      accessor: 'id'
+    },
+    {
+      Header: 'Player',
+      accessor: 'player'
+    },
+    {
+      Header: 'In Charge',
+      accessor: 'inCharge'
+    },
+    {
+      Header: 'StartTime',
+      accessor: 'startTime'
+    },
+    {
+      Header: 'Duration',
+      accessor: 'duration'
+    },
+    {
+      Header: 'Cost',
+      accessor: 'cost'
+    },
+    {
+      Header: 'Paid',
+      accessor: 'paid'
+    }
   ], []);
 
 
   const bgColor = useColorModeValue('#FFFFFF', '#1A202C');
   const fgColor = useColorModeValue('darkviolet', 'darkviolet');
+
+  const { sort } = pagination;
 
   return (
     <>
@@ -67,8 +91,32 @@ export default function GameSessionList(props){
               <Table>
                 <Thead>
                   <Tr>
-                    { columns.map((h, i) =>
-                      <Th key={h}> { h }</Th>)}
+                    { columns.map((h) =>
+                      <Th key={h.Header}
+                          _hover={{
+                            'cursor': 'pointer'
+                          }}
+                          onClick={() => {
+                            if(sort !== undefined) {
+                              let newSort = sort;
+                              
+                              if(sort == h.accessor) newSort = '-'+ sort; // to desc
+                              else if(sort == '-' + h.accessor) newSort = sort.slice(1, sort.length); // to asc
+                              else newSort = h.accessor; // new sort
+
+                              console.log(newSort);
+
+                              setPagination({...pagination, sort: newSort});
+                            }                            
+                          }}>
+
+                        <Flex alignItems='center'>
+                          { h.Header }
+                          { h.accessor == sort && <RiArrowDownSFill size='20'/>}
+                          { '-' + h.accessor == sort && <RiArrowUpSFill size='20'/>}                                      
+                        </Flex>
+                      </Th>)}
+                    
                     <Th bg={bgColor} style={{
                       "position": "sticky",
                       "top": 0,
@@ -177,7 +225,7 @@ export default function GameSessionList(props){
                 </Tbody>
                 <Tfoot>
                   <Tr>
-                    { columns.map((h) => <Th key={h}> { h }</Th>)}
+                    { columns.map((h) => <Th key={h.Header}> { h.Header }</Th>)}
                     <Th bg={bgColor} style={{
                       "position": "sticky",
                       "top": 0,
