@@ -30,10 +30,10 @@ import config from '../../config/config.js';
 import useGameSessions from '../../hooks/GameSession.js';
 
 import ActionButton from '../../components/ActionButton.js';
+import PromptActionButton from '../../components/PromptActionButton.js';
 
 
 export default function GameSessionList(props){
-
   const { user, userData } = useAuth();
   const toast = useToast();
 
@@ -186,33 +186,34 @@ export default function GameSessionList(props){
 
                                   }}/>
                               </ActionButton>
-                              <ActionButton
-                                onClick={ async () => {
-                                  const { gameSession, error } = await deleteSession(s.id);
-                                  if(error === undefined){
-                                    toast({
-                                      title: `Games Session ${gameSession.id} DELETED!`,
-                                      description: `Cashed REVERT successfully`,
-                                      status: 'success',
-                                      duration: 3000,
-                                      isClosable: true
-                                    });                                            
-                                  } else {
-                                    toast({
-                                      title: `Session delete failed`,
-                                      description: `Cash Register is not working properly. Please Try again later.`,
-                                      status: 'error',
-                                      duration: 3000,
-                                      isClosable: true
-                                    });
-                                  }
-                                }}>
+                              <PromptActionButton title='Delete'
+                                                  content='Are you sure you want delete?'                                
+                                                  onClick={ async () => {
+                                                    const { gameSession, error } = await deleteSession(s.id);
+                                                    if(error === undefined){
+                                                      toast({
+                                                        title: `Games Session ${gameSession.id} DELETED!`,
+                                                        description: `Cashed REVERT successfully`,
+                                                        status: 'success',
+                                                        duration: 3000,
+                                                        isClosable: true
+                                                      });                                            
+                                                    } else {
+                                                      toast({
+                                                        title: `Session delete failed`,
+                                                        description: `Cash Register is not working properly. Please Try again later.`,
+                                                        status: 'error',
+                                                        duration: 3000,
+                                                        isClosable: true
+                                                      });
+                                                    }
+                                                  }}>
                                 <AiFillDelete
                                   _hover={{ color: "red" }}
                                   cursor="pointer"
                                   size="20"
                                 />                                                                
-                              </ActionButton>                              
+                              </PromptActionButton>                              
 
                             </Flex>
 

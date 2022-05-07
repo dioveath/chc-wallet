@@ -28,9 +28,11 @@ import { AiFillInfoCircle } from 'react-icons/ai';
 import { RiArrowDownSFill, RiArrowUpSFill } from 'react-icons/ri';
 import { Link as RouterLink } from 'react-router-dom';
 
+import PromptActionButton from '../../components/PromptActionButton.js';
+import ActionButton from '../../components/ActionButton.js';
+
 
 export default function TransactionList(){
-
   const { transactions, pagination, setPagination, deleteTransaction } = useTransactions();
 
   const { user, userData } = useAuth();
@@ -129,39 +131,40 @@ export default function TransactionList(){
 
                       <Flex
                       justify="space-around">
-                        <AiFillDelete
-                          _hover={{ color: "red" }}
-                          cursor="pointer"
-                          onClick={ async () => {
-                            const { transaction, error } = await deleteTransaction(t.id, user.accessToken);
-
-                            if(error != undefined && error != null) {
-                              error.forEach((e) => {
-                                toast({
-                                  title: 'Transaction Add Failed',
-                                  description: e,
-                                  status: 'error',
-                                  duration: 3000,
-                                  isClosable: true
-                                });                
-                              });
-                            } else {
-                              console.log(transaction);
-                              toast({
-                                title: 'Transaction Deleted Successfully',
-                                description: `Transaction ID: ${transaction.id}`,
-                                status: 'info',
-                                duration: 3000,
-                                isClosable: true
-                              });
-
-                            }                          
-
-                          }}/>
+                        <PromptActionButton title='Delete'
+                                            content='Are you sure you want delete?'
+                                            onClick={async () => {
+                                              const { transaction, error } = await deleteTransaction(t.id, user.accessToken);
+                                              if(error != undefined && error != null) {
+                                                error.forEach((e) => {
+                                                  toast({
+                                                    title: 'Transaction Add Failed',
+                                                    description: e,
+                                                    status: 'error',
+                                                    duration: 3000,
+                                                    isClosable: true
+                                                  });                
+                                                });
+                                              } else {
+                                                console.log(transaction);
+                                                toast({
+                                                  title: 'Transaction Deleted Successfully',
+                                                  description: `Transaction ID: ${transaction.id}`,
+                                                  status: 'info',
+                                                  duration: 3000,
+                                                  isClosable: true
+                                                });
+                                              }                          
+                                            }}>
+                          <AiFillDelete/>
+                        </PromptActionButton>
 
                         <RouterLink to={"/finance/manage-transactions/" + t.id}>
-                          <AiFillInfoCircle />
-                        </RouterLink>
+                          <ActionButton>
+                            <AiFillInfoCircle />
+                          </ActionButton>
+                        </RouterLink>                        
+
                       </Flex>
 
                     </Td>
@@ -197,9 +200,37 @@ export default function TransactionList(){
         }    
       </HStack>
       <Box height="0.5rem"></Box>
+
+
     </>
   );
 
 
 }
 
+                          /* onClick={ async () => { */
+                          /*   const { transaction, error } = await deleteTransaction(t.id, user.accessToken); */
+
+                          /*   if(error != undefined && error != null) { */
+                          /*     error.forEach((e) => { */
+                          /*       toast({ */
+                          /*         title: 'Transaction Add Failed', */
+                          /*         description: e, */
+                          /*         status: 'error', */
+                          /*         duration: 3000, */
+                          /*         isClosable: true */
+                          /*       });                 */
+                          /*     }); */
+                          /*   } else { */
+                          /*     console.log(transaction); */
+                          /*     toast({ */
+                          /*       title: 'Transaction Deleted Successfully', */
+                          /*       description: `Transaction ID: ${transaction.id}`, */
+                          /*       status: 'info', */
+                          /*       duration: 3000, */
+                          /*       isClosable: true */
+                          /*     }); */
+
+                          /*   }                           */
+
+                          /* }}/> */
