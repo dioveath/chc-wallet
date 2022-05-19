@@ -22,7 +22,7 @@ services:
     networks:
       - shared-network
     healthcheck:
-      test: ["CMD", "curl", "http://api:5555"]
+      test: ["CMD", "curl", "http://api:4001"]
       interval: 5s
       timeout: 3s
       retries: 6
