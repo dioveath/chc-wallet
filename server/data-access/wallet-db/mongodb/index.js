@@ -36,8 +36,11 @@ async function addWallet(walletInfo){
 
 
 async function updateWallet(id, updateWalletInfo){
+  console.log(id);
+  console.log(updateWalletInfo);
   if(!id) 
     throw new Error("You must supply id!");
+
 
   // var walletData = await Wallet.findById(id);  
   // if(walletData === null) throw new Error("No Wallet with id: " + id);
