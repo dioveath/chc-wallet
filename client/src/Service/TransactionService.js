@@ -114,6 +114,9 @@ const TransactionService = {
         error: e.response.data.errorList
       };
     }    
+  },
+
+  updateTransaction: async(transactionId, newTransactionData, accessToken) => {
   }
 
   

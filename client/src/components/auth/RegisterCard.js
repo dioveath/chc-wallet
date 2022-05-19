@@ -55,6 +55,7 @@ export default function RegisterCard() {
 
   const { register, loading, registerError } = useAuth(); 
   const handleSubmit = async (e) => {
+    e.preventDefault();
     
     var userData = {
       fullName: fullName.current.value,

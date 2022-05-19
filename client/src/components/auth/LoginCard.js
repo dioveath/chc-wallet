@@ -24,7 +24,8 @@ export default function LoginCard() {
 
   const { login, loading, error } = useAuth();
 
-  const onSubmit = () => {
+  const onSubmit = (e) => {
+    e.preventDefault();
 
     login({
       email: email.current.value,
